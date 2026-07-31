@@ -1,0 +1,87 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block title %}Modify Commodity Parameters | Console{% endblock %} 
+
+{% block content %} 
+<div class="max-w-2xl mx-auto space-y-6"> 
+    <div> 
+        <h1 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-wider">Modify Commodity Node</h1> 
+        <p class="text-xs text-slate-400 mt-1">Alter tracking metrics, catalog classifications, or inventory lifecycle states.</p> 
+    </div> 
+
+    {% if error_messages.global %} 
+        <div class="p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold rounded-lg">{{ error_messages.global }}</div> 
+    {% endif %} 
+
+    <div class="bg-slate-900/20 border border-slate-800 rounded-xl shadow-2xl backdrop-blur overflow-hidden"> 
+        <form action="{% url 'product_update' product.product_id %}" method="POST" class="p-6 space-y-4 font-sans text-sm"> 
+            {% csrf_token %} 
+            
+            <div> 
+                <label for="product_name" class="block font-bold text-slate-300 mb-1.5">Legal Commodity Title</label> 
+                <input type="text" id="product_name" name="product_name" value="{{ product.product_name }}" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none transition-colors"> 
+            </div> 
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4"> 
+                <div> 
+                    <label for="sku" class="block font-bold text-slate-300 mb-1.5">SKU Unit Identifier</label> 
+                    <input type="text" id="sku" name="sku" value="{{ product.sku|default:'' }}" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none transition-colors font-mono"> 
+                </div> 
+                <div> 
+                    <label for="batch_number" class="block font-bold text-slate-300 mb-1.5">Batch Code Matrix</label> 
+                    <input type="text" id="batch_number" name="batch_number" value="{{ product.batch_number|default:'' }}" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none transition-colors font-mono"> 
+                </div> 
+                <div> 
+                    <label for="serial_number" class="block font-bold text-slate-300 mb-1.5">Serial Tracker ID</label> 
+                    <input type="text" id="serial_number" name="serial_number" value="{{ product.serial_number|default:'' }}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none transition-colors font-mono"> 
+                </div> 
+            </div> 
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4"> 
+                <div> 
+                    <label for="category" class="block font-bold text-slate-300 mb-1.5">Classification Folder Category</label> 
+                    <select id="category" name="category" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none transition-colors"> 
+                        {% for cat in categories %} 
+                            <option value="{{ cat.category_id }}" {% if product.category.category_id == cat.category_id %}selected{% endif %}>{{ cat.category_name }}</option> 
+                        {% endfor %} 
+                    </select> 
+                </div> 
+                <div> 
+                    <label for="current_status" class="block font-bold text-slate-300 mb-1.5">Lifecycle Operations State</label> 
+                    <select id="current_status" name="current_status" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none transition-colors"> 
+                        <option value="MANUFACTURED" {% if product.current_status == 'MANUFACTURED' %}selected{% endif %}>MANUFACTURED</option> 
+                        <option value="IN_TRANSIT" {% if product.current_status == 'IN_TRANSIT' %}selected{% endif %}>IN_TRANSIT</option> 
+                        <option value="DELIVERED" {% if product.current_status == 'DELIVERED' %}selected{% endif %}>DELIVERED</option> 
+                        <option value="SUSPENDED" {% if product.current_status == 'SUSPENDED' %}selected{% endif %}>SUSPENDED</option> 
+                    </select> 
+                </div> 
+            </div> 
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4"> 
+                <div> 
+                    <label for="manufacture_date" class="block font-bold text-slate-300 mb-1.5">Manufacture Date Stamp</label> 
+                    <input type="date" id="manufacture_date" name="manufacture_date" value="{{ product.manufacture_date|date:'Y-m-d' }}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none transition-colors"> 
+                </div> 
+                <div> 
+                    <label for="expiry_date" class="block font-bold text-slate-300 mb-1.5">Lifecycle Expiry Date</label> 
+                    <input type="date" id="expiry_date" name="expiry_date" value="{{ product.expiry_date|date:'Y-m-d' }}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none transition-colors"> 
+                    {% if error_messages.expiry_date %} 
+                        <span class="text-[10px] text-red-500 font-semibold block mt-1">{{ error_messages.expiry_date }}</span> 
+                    {% endif %} 
+                </div> 
+            </div> 
+
+            <div> 
+                <label for="description" class="block font-bold text-slate-300 mb-1.5">Technical Profile specifications</label> 
+                <textarea id="description" name="description" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-white focus:outline-none transition-colors">{{ product.description|default:'' }}</textarea> 
+            </div> 
+
+            <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-800/60"> 
+                <a href="{% url 'product_list' %}" class="px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-400 hover:text-white font-medium transition-colors">Cancel</a> 
+                <button type="submit" class="px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-white font-bold rounded-xl shadow-lg shadow-sky-500/10 transition-all duration-150 active:scale-[0.98]"> Commit Parameter Alteration </button> 
+            </div> 
+        </form> 
+    </div> 
+</div> 
+{% endblock %}

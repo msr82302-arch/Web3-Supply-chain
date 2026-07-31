@@ -1,0 +1,67 @@
+{# templates/components/form_field.html #}
+{% comment %}
+    Enterprise Layout Form Input Validation Component.
+    Accepts:
+        - field (django form boundfield instance object mapping property)
+        - label_text (string): Optional text string targeting input tag overrides
+        - help_text (string): Optional parameter instruction manual note strings
+        - unique_id (string): Mandatory tracking token context parameter mapping value
+{% endcomment %}
+
+<div class="w-full flex flex-col space-y-2 group">
+    {% if field %}
+        <!-- Django Bound Field Parsing Model Interface Lane -->
+        <label 
+            for="{{ field.id_for_label }}" 
+            class="block text-xs font-bold font-mono text-slate-400 uppercase tracking-widest transition-colors group-focus-within:text-sky-400"
+        >
+            {{ label_text|default:field.label }}
+            {% if field.field.required %}<span class="text-rose-500 ml-0.5">*</span>{% endif %}
+        </label>
+        
+        <div class="relative w-full rounded-xl">
+            <!-- Inject dynamic attribute overrides straight down onto native widgets -->
+            {{ field }}
+            
+            {% if field.errors %}
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-rose-400 animate-pulse">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                    </svg>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- System Validation Matrix Error Logs Loop Display -->
+        {% if field.errors %}
+            {% for error in field.errors %}
+                <p class="text-xs text-rose-400 font-sans font-medium flex items-center mt-1 animate-fade-in" role="alert">
+                    <span class="font-mono font-bold mr-1">[VALIDATION_ERROR]</span> {{ error }}
+                </p>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Framework Operational Guidance Strings -->
+        {% if help_text or field.help_text %}
+            <p class="text-xs text-slate-500 font-sans leading-relaxed mt-1">
+                {{ help_text|default:field.help_text|safe }}
+            </p>
+        {% endif %}
+        
+    {% else %}
+        <!-- Native Pure Variable Raw Form Fallback Block Injection Component Row Structure -->
+        <label 
+            for="input_{{ unique_id|default:'generic_node' }}" 
+            class="block text-xs font-bold font-mono text-slate-400 uppercase tracking-widest transition-colors group-focus-within:text-sky-400"
+        >
+            {{ label_text|default:"Parameter Identity Target Mapping" }}
+        </label>
+        <input 
+            type="text" 
+            id="input_{{ unique_id|default:'generic_node' }}"
+            name="input_{{ unique_id|default:'generic_node' }}"
+            class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-3 text-sm text-white font-sans tracking-wide shadow-inner focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition duration-200 placeholder-slate-600"
+            placeholder="Initialize entry input properties string..."
+        >
+    {% endif %}
+</div>

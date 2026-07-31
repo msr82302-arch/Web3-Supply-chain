@@ -1,0 +1,35 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block layout_wrapper %}
+<div class="min-h-screen flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-950 transition-colors duration-150">
+    
+    
+    <div class="sm:mx-auto sm:w-full sm:max-w-md text-center space-y-3">
+        {% block auth_header_identity %}
+        <div class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-sky-600 shadow-sm text-white font-black text-lg select-none tracking-tight">
+            ■
+        </div>
+        {% endblock %}
+        
+        <h2 class="text-center text-2xl font-black tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+            {% block auth_title %}Sign in to your platform console{% endblock %}
+        </h2>
+        
+        {% if auth_subtitle %}
+        <p class="text-xs font-medium text-slate-400 dark:text-slate-500">
+            {{ auth_subtitle }}
+        </p>
+        {% endif %}
+    </div>
+
+    <!-- Central Interactive Forms Container Card Sheet -->
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md animate-fade-in">
+        <div class="bg-white py-8 px-4 border border-slate-200/80 rounded-2xl shadow-xs dark:bg-slate-900 dark:border-slate-800/80 sm:px-10">
+            {% block auth_content %}{% endblock %}
+        </div>
+    </div>
+    
+</div>
+{% endblock %}

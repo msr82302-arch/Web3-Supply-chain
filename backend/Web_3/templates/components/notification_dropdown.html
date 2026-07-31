@@ -1,0 +1,89 @@
+{# templates/components/notification_dropdown.html #}
+{% comment %}
+    Enterprise Live Telemetry Notification Monitor Component.
+    Accepts:
+        - alert_logs_list (list of objects/dicts carrying title, message, age, urgency metrics)
+        - unread_count (int): Counter driving visual alert state badges
+{% endcomment %}
+
+<div 
+    class="relative inline-block text-left"
+    x-data="{ isOpen: false }"
+    @click.away="isOpen = false"
+    @keydown.escape.window="isOpen = false"
+>
+    <!-- Active Monitor Handshake Toggle Switch Trigger Interface -->
+    <button 
+        type="button"
+        class="relative p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white border border-slate-700 transition focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+        @click="isOpen = !isOpen"
+        :aria-expanded="isOpen.toString()"
+        aria-haspopup="true"
+        id="system_notification_bell_trigger"
+        aria-label="Open pipeline system telemetry alerts stream dropdown context panels"
+    >
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+        </svg>
+        
+        {% if unread_count and unread_count > 0 %}
+            <span class="absolute top-1.5 right-1.5 flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+            </span>
+        {% endif %}
+    </button>
+
+    <!-- Transmitted Broadcast Overlay Stream Dropdown Pane Component Matrix Row -->
+    <div 
+        x-show="isOpen"
+        x-transition:enter="transition ease-out duration-100"
+        x-transition:enter-start="transform opacity-0 scale-95"
+        x-transition:enter-end="transform opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-75"
+        x-transition:leave-start="transform opacity-100 scale-100"
+        x-transition:leave-end="transform opacity-0 scale-95"
+        class="absolute right-0 mt-3 w-80 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl shadow-black/80 z-50 overflow-hidden font-sans focus:outline-none"
+        style="display: none;"
+        role="menu"
+        aria-orientation="vertical"
+        aria-labelledby="system_notification_bell_trigger"
+    >
+        <div class="px-4 py-3 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+            <span class="text-xs font-bold font-mono tracking-wider uppercase text-slate-400">System Pipeline Broadcasts</span>
+            <span class="text-[10px] font-mono font-bold bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded">{{ unread_count|default:"0" }} ACTIVE</span>
+        </div>
+
+        <div class="max-h-72 overflow-y-auto divide-y divide-slate-800/60">
+            {% if alert_logs_list %}
+                {% for alert in alert_logs_list %}
+                    <div class="p-4 hover:bg-slate-800/40 transition duration-150 flex items-start space-x-3 text-left" role="menuitem">
+                        <div class="shrink-0 mt-0.5">
+                            {% if alert.urgency == 'CRITICAL' %}
+                                <span class="h-2 w-2 rounded-full bg-rose-500 block"></span>
+                            {% else %}
+                                <span class="h-2 w-2 rounded-full bg-sky-500 block"></span>
+                            {% endif %}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-bold text-white tracking-wide leading-snug truncate">{{ alert.title }}</p>
+                            <p class="text-[11px] text-slate-400 mt-1 font-medium leading-relaxed line-clamp-2">{{ alert.message }}</p>
+                            <p class="text-[9px] font-mono text-slate-500 mt-1.5 uppercase tracking-wider">{{ alert.age|default:"JUST NOW" }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <!-- Empty Placeholder State Grid Configuration Layout View Context -->
+                <div class="p-8 text-center flex flex-col items-center justify-center bg-slate-900/40">
+                    <p class="text-xs font-mono text-slate-500 font-bold uppercase tracking-widest leading-relaxed">No telemetry event logs logged across pipeline gateways.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if alert_logs_list %}
+            <a href="{% url 'notifications_dashboard' %}" class="block text-center py-2.5 bg-slate-950 hover:bg-slate-900 text-[10px] font-bold font-mono uppercase tracking-widest text-sky-400 hover:text-sky-300 border-t border-slate-800 transition">
+                Access Unified Broadcast Center Logs ->
+            </a>
+        {% endif %}
+    </div>
+</div>

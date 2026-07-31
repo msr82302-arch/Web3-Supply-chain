@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Immutable Operations Log Ledger | Console{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200/80 pb-5 dark:border-slate-800/80 transition-colors">
+        <div>
+            <h1 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-wider">Platform Governance Audit Ledger</h1>
+            <p class="text-xs text-slate-400 mt-1">Immutable, system-generated tracking trail auditing account actions, metadata delta states, and endpoint access IPs.</p>
+        </div>
+        <div class="inline-flex space-x-2">
+            <a href="{% url 'analytics:analytics_insights' %}" class="h-9 px-4 inline-flex items-center text-xs font-bold bg-sky-500 hover:bg-sky-600 text-white rounded-lg transition-colors">AI Telemetry Insights</a>
+            <a href="{% url 'analytics:analytics_reports' %}" class="h-9 px-4 inline-flex items-center text-xs font-bold bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800 rounded-lg transition-colors">Security Incident Reports</a>
+        </div>
+    </div>
+
+    <!-- Active SCM Metrics KPI Grid -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-slate-900/20 border border-slate-800 rounded-2xl p-5 backdrop-blur">
+            <span class="text-slate-500 text-[10px] uppercase font-bold tracking-widest block">Total Products</span>
+            <span class="text-xl font-black text-white mt-1 block font-mono">{{ metrics.total_products|default:"0" }}</span>
+        </div>
+        <div class="bg-slate-900/20 border border-slate-800 rounded-2xl p-5 backdrop-blur">
+            <span class="text-slate-500 text-[10px] uppercase font-bold tracking-widest block">On-Chain Tokenized</span>
+            <span class="text-xl font-black text-sky-400 mt-1 block font-mono">{{ metrics.tokenized_products|default:"0" }}</span>
+        </div>
+        <div class="bg-slate-900/20 border border-slate-800 rounded-2xl p-5 backdrop-blur">
+            <span class="text-slate-500 text-[10px] uppercase font-bold tracking-widest block">Ecosystem Orders</span>
+            <span class="text-xl font-black text-white mt-1 block font-mono">{{ metrics.total_orders|default:"0" }}</span>
+        </div>
+        <div class="bg-slate-900/20 border border-slate-800 rounded-2xl p-5 backdrop-blur">
+            <span class="text-slate-500 text-[10px] uppercase font-bold tracking-widest block">Active Shipments</span>
+            <span class="text-xl font-black text-emerald-400 mt-1 block font-mono">{{ metrics.active_shipments|default:"0" }}</span>
+        </div>
+    </section>
+
+    {% if audit_logs %}
+    <div class="flex flex-col">
+        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                <div class="shadow-2xs border border-slate-800 rounded-xl overflow-hidden bg-slate-900/20 backdrop-blur transition-colors">
+                    <table class="min-w-full divide-y divide-slate-800">
+                        <thead class="bg-slate-900/40 font-bold uppercase tracking-wider text-slate-400">
+                            <tr class="divide-x divide-slate-800">
+                                <th class="px-6 py-3 text-left">Governance Action</th>
+                                <th class="px-6 py-3 text-left">Target Entity Column</th>
+                                <th class="px-6 py-3 text-left">Access IP Tracker</th>
+                                <th class="px-6 py-3 text-left">Device Agent Signature</th>
+                                <th class="px-6 py-3 text-right">Timestamp Proof</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800 bg-slate-950/20 text-slate-300 font-mono">
+                            {% for log in audit_logs %}
+                            <tr class="hover:bg-slate-900/20 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap text-xs font-sans font-black text-white uppercase tracking-wide">
+                                    {{ log.action }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-slate-400">
+                                    {{ log.entity_name }} 
+                                    <span class="block text-[10px] text-slate-500 tracking-normal font-sans mt-0.5 select-all" data-crypto-truncate="true">UID: {{ log.entity_id }}</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-slate-300 font-bold">{{ log.ip_address|default:"127.0.0.1" }}</td>
+                                <td class="px-6 py-4 text-slate-400 max-w-[180px] truncate font-sans text-[11px]" title="{{ log.user_agent }}">
+                                    {{ log.user_agent|default:"System Engine Thread" }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-slate-400 text-[11px]">
+                                    {{ log.created_at|date:"Y-m-d H:i:s" }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="border border-dashed border-slate-800 rounded-xl p-12 text-center">
+        <h3 class="text-sm font-bold text-slate-400 font-mono">Audit Trail History Empty</h3>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Dynamic telemetry utilities loaders -->
+<script src="{% static 'js/analytics.js' %}" type="text/javascript"></script>
+{% endblock %}

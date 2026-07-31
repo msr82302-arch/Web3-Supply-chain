@@ -1,0 +1,69 @@
+{% extends 'layouts/dashboard.html' %} 
+{% load static %} 
+
+{% block title %}Commodities Registry Catalog | Console{% endblock %} 
+
+{% block content %} 
+<div class="space-y-6"> 
+    <!-- Control Bar --> 
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200/80 pb-5 dark:border-slate-800/80 transition-colors"> 
+        <div> 
+            <h1 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-wider">Commodities Node Directory</h1> 
+            <p class="text-xs text-slate-400 mt-1">Global catalog listing verified supply chain items, structural batch traces, and cryptographic tokens.</p> 
+        </div> 
+        <div class="shrink-0"> 
+            <a href="{% url 'product_create' %}" class="inline-flex items-center justify-center h-9 px-4 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"> ✙ Initialize Fresh Product Node </a> 
+        </div> 
+    </div> 
+
+    <!-- Products Data Grid --> 
+    {% if product_list %} 
+    <div class="flex flex-col"> 
+        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8"> 
+            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8"> 
+                <div class="shadow-2xs overflow-hidden border border-slate-200/80 rounded-xl bg-white dark:border-slate-800/80 dark:bg-slate-900 transition-colors duration-150"> 
+                    <table class="min-w-full divide-y divide-slate-200/80 dark:divide-slate-800/80"> 
+                        <thead class="bg-slate-50/70 dark:bg-slate-900/40"> 
+                            <tr class="divide-x divide-slate-200/60 dark:divide-slate-800/60"> 
+                                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Commodity Title</th> 
+                                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">SKU / Stock Unit ID</th> 
+                                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Batch Code ID</th> 
+                                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Lifecycle State</th> 
+                                <th class="px-6 py-3 text-right text-xs font-bold uppercase tracking-wider text-slate-400">Audit Trace</th> 
+                            </tr> </thead> 
+                        <tbody class="divide-y divide-slate-200/80 dark:divide-slate-800/80 bg-white dark:bg-slate-900"> 
+                            {% for product in product_list %} 
+                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/40 transition-colors"> 
+                                <td class="px-6 py-4 whitespace-nowrap text-xs font-bold text-slate-900 dark:text-white"> 
+                                    <!-- Matches explicit field company_id key rule -->
+                                    <a href="{% url 'product_detail' product.product_id %}" class="text-sky-600 dark:text-sky-400 hover:underline"> 
+                                        {{ product.product_name }} 
+                                    </a> 
+                                    <span class="block text-[10px] text-slate-400 font-normal mt-0.5">{{ product.category.category_name|default:"General Cargo Node" }}</span>
+                                </td> 
+                                <td class="px-6 py-4 whitespace-nowrap text-xs font-mono text-slate-500 dark:text-slate-400">{{ product.sku }}</td> 
+                                <td class="px-6 py-4 whitespace-nowrap text-xs font-mono text-slate-400 font-semibold">{{ product.batch_number }}</td> 
+                                <td class="px-6 py-4 whitespace-nowrap text-xs"> 
+                                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold {% if product.current_status == 'MANUFACTURED' %}bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400{% else %}bg-amber-50 text-amber-700 dark:bg-amber-950/20 dark:text-amber-400{% endif %}"> 
+                                        {{ product.current_status }} 
+                                    </span> 
+                                </td> 
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-xs"> 
+                                    <a href="{% url 'product_detail' product.product_id %}" class="text-sky-600 dark:text-sky-400 font-semibold hover:underline">Inspect Node 🡒</a> 
+                                </td> 
+                            </tr> 
+                            {% endfor %} 
+                        </tbody> 
+                    </table> 
+                </div> 
+            </div> 
+        </div> 
+    </div> 
+    {% else %} 
+    <div class="border border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-12 text-center">
+        <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300">No Commodity Profiles Logged</h3>
+        <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">No inventory entities or tracking tokens have been initialized across this partition cluster yet.</p>
+    </div>
+    {% endif %} 
+</div> 
+{% endblock %}

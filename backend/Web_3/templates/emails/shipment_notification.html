@@ -1,0 +1,46 @@
+{% extends "layouts/base_email.html" %}
+
+{% block email_title %}Transit Milestone Tracking Alert{% endblock email_title %}
+{% block primary_brand_color %}#38bdf8{% endblock primary_brand_color %}
+{% block header_title %}Immutable Lifecycle Progress Alert{% endblock header_title %}
+{% block header_meta %}LOGISTICS.TRACK{% endblock header_meta %}
+
+{% block email_content %}
+<p style="margin: 0 0 20px 0; font-size: 14px; color: #e2e8f0; font-weight: bold; font-family: -apple-system, sans-serif;">
+    Shipping Manifest ID: <span style="font-family: 'Courier New', Courier, monospace; color: #38bdf8;">{{ shipment_number|default:"SHP-PREVIEW-0000" }}</span>
+</p>
+
+<!-- Telemetry Event Details Grid Block Table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="12" style="background-color: #0f172a; border-radius: 12px; margin-bottom: 24px; border: 1px solid #334155; font-size: 13px; border-collapse: collapse;">
+    <tr>
+        <td style="color: #64748b; font-weight: bold; text-transform: uppercase; width: 120px; padding: 12px; border-bottom: 1px solid #1e293b;">Latest Milestone</td>
+        <td style="color: #ffffff; font-weight: bold; font-family: 'Courier New', Courier, monospace; padding: 12px; border-bottom: 1px solid #1e293b;">{{ tracking_status|default:"In Transit Handshake" }}</td>
+    </tr>
+    <tr>
+        <td style="color: #64748b; font-weight: bold; text-transform: uppercase; padding: 12px;">Recorded Node</td>
+        <td style="color: #cbd5e1; padding: 12px;">{{ location|default:"Ecosystem Gateway Hub Alpha" }}</td>
+    </tr>
+</table>
+
+<!-- Timestamp Monitoring String Check Guard Block -->
+<p style="margin: 0 0 30px 0; font-size: 11px; color: #64748b; font-family: 'Courier New', Courier, monospace; letter-spacing: 0.5px;">
+    Timestamp block track: {% if recorded_at %}{{ recorded_at|date:"Y-m-d H:i:s" }}{% else %}Synchronized Real-Time{% endif %}
+</p>
+
+<!-- Tracking View Core Action Interface Node -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse;">
+    <tr>
+        <td align="center">
+            <table border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse;">
+                <tr>
+                    <td align="center" style="border-radius: 12px; background-color: #38bdf8;">
+                        <a href="{% if shipment_id %}{% url 'shipment_detail' shipment_id %}{% else %}#{% endif %}" target="_blank" style="display: inline-block; font-size: 13px; font-weight: bold; color: #0f172a; text-decoration: none; border-radius: 12px; letter-spacing: 0.5px; padding: 14px 30px;">
+                            Monitor Core Node Delivery Stream
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+{% endblock email_content %}

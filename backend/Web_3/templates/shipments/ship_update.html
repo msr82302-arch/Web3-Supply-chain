@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Modify Waypoint Parameters | Console{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6">
+    <div>
+        <h1 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-wider">Log Telemetry Waypoint</h1>
+        <p class="text-xs text-slate-400 mt-1">Alter transit states or log coordinate waypoints [1].</p>
+    </div>
+
+    {% if error_messages.global %}
+        <div class="p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold rounded-lg mb-4">{{ error_messages.global }}</div>
+    {% endif %}
+
+    <div class="bg-slate-900/20 border border-slate-800 rounded-xl shadow-2xl backdrop-blur overflow-hidden">
+        <form action="{% url 'shipment_update' shipment.shipment_id %}" method="POST" class="p-6 space-y-4 font-sans text-sm">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="shipment_status" class="block font-bold text-slate-300 mb-1.5">Logistics Transit State</label>
+                    <select id="shipment_status" name="shipment_status" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none">
+                        <option value="MANIFEST_CREATED" {% if shipment.shipment_status == 'MANIFEST_CREATED' %}selected{% endif %}>MANIFEST CREATED</option>
+                        <option value="DISPATCHED" {% if shipment.shipment_status == 'DISPATCHED' %}selected{% endif %}>DISPATCHED</option>
+                        <option value="IN_TRANSIT" {% if shipment.shipment_status == 'IN_TRANSIT' %}selected{% endif %}>IN_TRANSIT</option>
+                        <option value="OUT_FOR_DELIVERY" {% if shipment.shipment_status == 'OUT_FOR_DELIVERY' %}selected{% endif %}>OUT FOR DELIVERY</option>
+                        <option value="DELIVERED" {% if shipment.shipment_status == 'DELIVERED' %}selected{% endif %}>DELIVERED</option>
+                        <option value="CANCELLED" {% if shipment.shipment_status == 'CANCELLED' %}selected{% endif %}>CANCELLED</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="location" class="block font-bold text-slate-300 mb-1.5">Checkpoint Facility / Location</label>
+                    <input type="text" id="location" name="location" placeholder="e.g. Frankfurt Depot Hub" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="latitude" class="block font-bold text-slate-300 mb-1.5">Latitude (numeric 10,7)</label>
+                    <input type="number" step="0.0000001" id="latitude" name="latitude" placeholder="e.g. 50.1109" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none font-mono">
+                </div>
+                <div>
+                    <label for="longitude" class="block font-bold text-slate-300 mb-1.5">Longitude (numeric 10,7)</label>
+                    <input type="number" step="0.0000001" id="longitude" name="longitude" placeholder="e.g. 8.6821" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none font-mono">
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-800/60">
+                <a href="{% url 'shipment_list' %}" class="px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-400 hover:text-white font-medium transition-colors">Cancel</a>
+                <button type="submit" class="px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-white font-bold rounded-xl shadow-lg shadow-sky-500/10 transition-all duration-150"> Log Telemetry Milestones </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

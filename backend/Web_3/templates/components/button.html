@@ -1,0 +1,44 @@
+{# templates/components/button.html #}
+{% comment %}
+    Enterprise Button Trigger Element Component.
+    Accepts:
+        - label (string): Primary button action label text
+        - type (string): "submit", "button" (default)
+        - variant (string): "primary", "secondary", "danger", "ghost"
+        - url (string): If populated, will render an anchor hyperlink element cleanly instead
+        - icon_svg (html string): Optional HTML vector block injection snippet
+        - is_disabled (boolean): Toggle inactive interaction restrictions
+        - custom_id (string): Optional element mapping identifier property key
+{% endcomment %}
+
+{% if url %}
+    <a 
+        href="{{ url }}"
+        {% if custom_id %}id="{{ custom_id }}"{% endif %}
+        class="inline-flex items-center justify-center font-semibold text-sm rounded-xl px-5 py-3 transition-all duration-200 border text-center font-sans tracking-wide active:scale-[0.99]
+        {% if variant == 'secondary' %}bg-slate-800 hover:bg-slate-700 text-slate-100 border-slate-700 shadow-md shadow-black/20
+        {% elif variant == 'danger' %}bg-rose-600 hover:bg-rose-500 text-white border-transparent shadow-lg shadow-rose-950/20
+        {% elif variant == 'ghost' %}bg-transparent hover:bg-slate-800 text-slate-400 hover:text-white border-transparent
+        {% else %}bg-sky-500 hover:bg-sky-400 text-slate-950 border-transparent shadow-lg shadow-sky-500/10{% endif %} 
+        {% if is_disabled %}opacity-40 pointer-events-none aria-disabled="true"{% endif %}"
+        {% if is_disabled %}tabindex="-1"{% endif %}
+    >
+        {% if icon_svg %}<span class="mr-2 inline-flex items-center justify-center">{{ icon_svg|safe }}</span>{% endif %}
+        {{ label|default:"EXECUTE" }}
+    </a>
+{% else %}
+    <button 
+        type="{{ type|default:'button' }}"
+        {% if custom_id %}id="{{ custom_id }}"{% endif %}
+        {% if is_disabled %}disabled aria-disabled="true"{% endif %}
+        class="inline-flex items-center justify-center font-semibold text-sm rounded-xl px-5 py-3 transition-all duration-200 border text-center font-sans tracking-wide active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-sky-500
+        {% if variant == 'secondary' %}bg-slate-800 hover:bg-slate-700 text-slate-100 border-slate-700 shadow-md shadow-black/20
+        {% elif variant == 'danger' %}bg-rose-600 hover:bg-rose-500 text-white border-transparent shadow-lg shadow-rose-950/20
+        {% elif variant == 'ghost' %}bg-transparent hover:bg-slate-800 text-slate-400 hover:text-white border-transparent
+        {% else %}bg-sky-500 hover:bg-sky-400 text-slate-950 border-transparent shadow-lg shadow-sky-500/10{% endif %}
+        disabled:opacity-40 disabled:pointer-events-none"
+    >
+        {% if icon_svg %}<span class="mr-2 inline-flex items-center justify-center">{{ icon_svg|safe }}</span>{% endif %}
+        {{ label|default:"EXECUTE" }}
+    </button>
+{% endif %}

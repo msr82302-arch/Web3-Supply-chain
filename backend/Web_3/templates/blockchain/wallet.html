@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Consortium Wallets | Console{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/blockchain.css' %}">
+
+<div class="space-y-6" x-data="{
+    connecting: false,
+    address: '',
+    challenge: '',
+    signature: '',
+    errorMessage: '',
+    successMessage: '',
+    
+    async requestVerification() {
+        this.connecting = true; this.errorMessage = ''; this.successMessage = '';
+        if (!window.ethereum) {
+            this.errorMessage = 'No Web3 wallet browser extension detected (e.g. MetaMask).';
+            this.connecting = false; return;
+        }
+
+        try {
+            // 1. Fetch public addresses from browser extension
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            this.address = accounts[0];
+
+            // 2. Fetch challenge nonce from SCM session API
+            const chalRes = await fetch('{% url "blockchain:api-wallet-challenge" %}');
+            const chalData = await chalRes.json();
+            this.challenge = chalData.challenge;
+
+            // 3. Request cryptographic EIP-191 signature
+            this.signature = await window.ethereum.request({
+                method: 'personal_sign',
+                params: [this.challenge, this.address]
+            });
+
+            // 4. Verify signature on SCM backend
+            const verifyRes = await fetch('{% url "blockchain:api-wallet-verify" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    wallet_address: this.address,
+                    signature: this.signature,
+                    wallet_provider: 'MetaMask',
+                    blockchain_network: 'Ethereum'
+                })
+            });
+
+            const verifyData = await verifyRes.json();
+            if (verifyRes.status === 201) {
+                this.successMessage = 'Wallet proof successfully verified and registered.';
+                setTimeout(() => window.location.reload(), 2000);
+            } else {
+                this.errorMessage = verifyData.message;
+            }
+        } catch (err) {
+            this.errorMessage = err.message || 'Signature transaction rejected by operator.';
+        } finally {
+            this.connecting = false;
+        }
+    }
+}">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-800 pb-5">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight text-white uppercase tracking-wider">Consortium Vault Nodes</h1>
+            <p class="text-xs text-slate-400 mt-1">Immutably associate and cryptographically verify consortium wallets.</p>
+        </div>
+        <div>
+            <button @click="requestVerification()" :disabled="connecting" class="bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl transition shadow-lg text-sm flex items-center">
+                <template x-if="connecting">
+                    <span class="animate-spin inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full mr-2"></span>
+                </template>
+                <span x-text="connecting ? 'Signing proof...' : 'Link MetaMask Wallet'"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Alert notifications -->
+    <div x-show="errorMessage" class="p-4 bg-rose-950/80 border border-rose-900 text-rose-300 rounded-xl text-sm" x-cloak x-text="errorMessage"></div>
+    <div x-show="successMessage" class="p-4 bg-emerald-950/80 border border-emerald-900 text-emerald-300 rounded-xl text-sm" x-cloak x-text="successMessage"></div>
+
+    <!-- Layout Tables -->
+    {% if wallet_list %}
+    <div class="bg-[#111827]/80 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-800 text-sm">
+                <thead class="bg-[#030712]/50">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Wallet Signature Proof</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Network</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Provider</th>
+                        <th class="px-6 py-4 text-center text-xs font-bold text-slate-400 uppercase tracking-wider">Verification Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800">
+                    {% for wallet in wallet_list %}
+                    <tr class="hover:bg-slate-900/40 transition">
+                        <td class="px-6 py-4 whitespace-nowrap font-mono text-xs text-sky-400 font-bold select-all">{{ wallet.wallet_address }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap font-semibold text-slate-300 uppercase text-xs">{{ wallet.blockchain_network }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap font-mono text-xs text-slate-500 font-semibold">{{ wallet.wallet_provider }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            {% if wallet.is_verified %}
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">CRYPTOGRAPHIC VERIFIED</span>
+                            {% else %}
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-400 border border-slate-500/20">PENDING</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="border border-dashed border-slate-800 rounded-2xl p-12 text-center text-slate-400 italic">
+        No cryptographic wallets linked to this consensus node.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

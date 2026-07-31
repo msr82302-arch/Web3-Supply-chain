@@ -1,0 +1,5 @@
+/* backend/Web_3/static/css/responsive.css */
+@media (max-width: 640px) {
+    .card-panel { padding: 16px; }
+    body { font-size: 14px; }
+}

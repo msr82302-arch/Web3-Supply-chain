@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Cryptographic Telemetry Node Header Card -->
+    <div class="rounded-2xl border border-slate-800 bg-slate-950/40 p-8 backdrop-blur shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div class="flex items-start space-x-5">
+            <div class="h-16 w-16 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-2xl shadow-inner font-mono text-slate-400 select-none">
+                {% if company.logo_url %}
+                    <img src="{{ company.logo_url }}" alt="Logo" class="h-full w-full object-cover rounded-2xl">
+                {% else %}
+                    {{ company.company_name|slice:":2"|upper }}
+                {% endif %}
+            </div>
+            <div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <h1 class="text-2xl font-bold tracking-tight text-white">{{ company.company_name }}</h1>
+                    <span class="inline-flex items-center rounded-lg px-2.5 py-0.5 text-xs font-mono font-medium tracking-wide bg-slate-800 text-slate-300 border border-slate-700/50">
+                        {{ company.company_type }}
+                    </span>
+                    {% if company.is_verified %}
+                    <span class="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400 border border-emerald-500/20">
+                        ● Mainnet Verified
+                    </span>
+                    {% else %}
+                    <span class="inline-flex items-center rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-400 border border-amber-500/20">
+                        ○ Pending Audit
+                    </span>
+                    {% endif %}
+                </div>
+                <p class="mt-1.5 text-xs font-mono text-slate-500">Infrastructure Node System Key ID: 
+                    <span data-crypto-truncate="true" class="text-sky-400 bg-slate-950/60 px-2 py-0.5 rounded border border-slate-800/80 font-bold cursor-pointer transition-colors">{{ company.company_id }}</span>
+                </p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3 self-end md:self-center">
+            <a href="{% url 'company_update' company.company_id %}" class="inline-flex items-center justify-center rounded-xl bg-slate-900 border border-slate-800 px-4 py-2.5 text-sm font-semibold text-slate-300 hover:text-white hover:border-slate-700 transition-all">
+                Configure Profile Parameters
+            </a>
+        </div>
+    </div>
+
+    <!-- Telemetry Parameter Grid Columns Layout -->
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <!-- Structural Identification Properties -->
+        <div class="lg:col-span-2 space-y-8">
+            <div class="rounded-2xl border border-slate-800 bg-slate-950/20 p-6 backdrop-blur">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 font-mono mb-4 border-b border-slate-900 pb-2">Compliance Registration Specifications</h3>
+                <dl class="grid grid-cols-1 gap-6 sm:grid-cols-2 text-sm font-mono">
+                    <div>
+                        <dt class="text-slate-500">Registry Authority Number</dt>
+                        <dd class="mt-1 text-white font-medium bg-slate-900/40 p-2.5 rounded-xl border border-slate-800/40">{{ company.registration_number|default:"No active record" }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-slate-500">Tax Identification Hash Code</dt>
+                        <dd class="mt-1 text-white font-medium bg-slate-900/40 p-2.5 rounded-xl border border-slate-800/40">{{ company.tax_number|default:"No active record" }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-slate-500">Node Communication Email</dt>
+                        <dd class="mt-1 text-white font-medium bg-slate-900/40 p-2.5 rounded-xl border border-slate-800/40 truncate">{{ company.email|default:"No active record" }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-slate-500">Contact Phone Channel</dt>
+                        <dd class="mt-1 text-white font-medium bg-slate-900/40 p-2.5 rounded-xl border border-slate-800/40">{{ company.phone|default:"No active record" }}</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+
+        <!-- Ledger Node Ecosystem Metrics Sidebars -->
+        <div class="space-y-8">
+            <div class="rounded-2xl border border-slate-800 bg-slate-950/20 p-6 backdrop-blur text-xs font-mono space-y-4">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 border-b border-slate-900 pb-2">Ecosystem Matrix Metrics</h3>
+                <div>
+                    <span class="text-slate-500 block mb-1">Onboarding Genesis Track Epoch</span>
+                    <span class="text-slate-400 block font-medium">{{ company.created_at|date:"Y-m-d H:i:s T" }}</span>
+                </div>
+                <div>
+                    <span class="text-slate-500 block mb-1">Last Cryptographic Mutation Vector</span>
+                    <span class="text-slate-400 block font-medium">{{ company.updated_at|date:"Y-m-d H:i:s T" }}</span>
+                </div>
+                <div class="pt-4 border-t border-slate-900 flex justify-between items-center text-[10px] text-slate-600">
+                    <span>Ledger State: SYNCED</span>
+                    <span>Schema Ref: V2_COMPANIES</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

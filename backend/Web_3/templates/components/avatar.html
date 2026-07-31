@@ -1,0 +1,23 @@
+<div class="relative inline-block" x-data="{ open: false }" @click.away="open = false">
+    <button type="button" class="max-w-xs bg-slate-100 rounded-full flex items-center text-sm focus:outline-none dark:bg-slate-800 cursor-pointer" id="user-profile-menu-button" aria-expanded="false" aria-haspopup="true" @click="open = !open">
+        <span class="sr-only">Open operator option grid overlay drawer</span>
+        <span class="w-8 h-8 rounded-full border border-slate-200 bg-sky-950 text-sky-200 flex items-center justify-center font-bold text-xs tracking-wider shadow-inner dark:border-slate-800 dark:bg-sky-900">
+            {{ request.user.username|slice:":2"|upper|default:"OP" }}
+        </span>
+    </button>
+
+    <div x-show="open" x-transition:enter="transition ease-out duration-100 transform" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75 transform" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" style="display: none;" class="origin-top-right absolute right-0 mt-2 w-48 rounded-xl shadow-lg bg-white border border-slate-200 py-1 dark:bg-slate-900 dark:border-slate-800 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-profile-menu-button" tabindex="-1">
+        <div class="px-4 py-2 border-b border-slate-200 dark:border-slate-800">
+            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Session Node Principal</p>
+            <p class="text-xs font-bold text-slate-900 dark:text-white truncate">{{ request.user.username|default:"Operator Node" }}</p>
+        </div>
+        <a href="/settings/" class="block px-4 py-2 text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60" role="menuitem">Profile Configuration</a>
+        <div class="border-t border-slate-200 dark:border-slate-800 my-1"></div>
+        <form action="/accounts/logout/" method="POST" class="block w-full">
+            {% csrf_token %}
+            <button type="submit" class="w-full text-left block px-4 py-2 text-xs font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 cursor-pointer" role="menuitem">
+                De-authenticate Anchor
+            </button>
+        </form>
+    </div>
+</div>

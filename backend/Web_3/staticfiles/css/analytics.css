@@ -1,0 +1,20 @@
+/* SCM platform - Analytics Visual Overrides
+ * Location: static/css/analytics.css
+ */
+
+/* Metric panel glow highlighting rules */
+.metrics-card-accent {
+    box-shadow: 0 4px 20px rgba(14, 165, 233, 0.05);
+    border-color: rgba(14, 165, 233, 0.15) !important;
+}
+
+/* Accuracy value color code ranges */
+.score-range-high {
+    color: #10b981;
+    font-weight: 800;
+}
+
+.score-range-alert {
+    color: #f59e0b;
+    font-weight: 800;
+}

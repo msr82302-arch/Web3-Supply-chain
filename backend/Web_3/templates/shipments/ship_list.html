@@ -1,0 +1,58 @@
+{% extends 'layouts/dashboard.html' %}
+{% load static %}
+
+{% block title %}Logistics Tracking Hub | Console{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200/80 pb-5 dark:border-slate-800/80 transition-colors">
+        <div>
+            <h1 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-wider">Logistics Dispatch Hub</h1>
+            <p class="text-xs text-slate-400 mt-1">Real-time status synchronization matrices monitoring active cargo custody transfers.</p>
+        </div>
+    </div>
+
+    {% if shipment_list %}
+    <div class="flex flex-col">
+        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                <div class="shadow-2xs overflow-hidden border border-slate-200/80 rounded-xl bg-white dark:border-slate-800/80 dark:bg-slate-900 transition-colors duration-150">
+                    <table class="min-w-full divide-y divide-slate-200/80 dark:divide-slate-800/80">
+                        <thead class="bg-slate-50/70 dark:bg-slate-900/40">
+                            <tr class="divide-x divide-slate-200/60 dark:divide-slate-800/60">
+                                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Shipment Number</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Tracking Code</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Logistics Carrier</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Transit State</th>
+                                <th class="px-6 py-3 text-center text-xs font-bold uppercase tracking-wider text-slate-400 w-24">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200/80 dark:divide-slate-800/80 bg-white dark:bg-slate-900">
+                            {% for shipment in shipment_list %}
+                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/40 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap text-xs font-mono font-bold text-sky-600 dark:text-sky-400">
+                                    <a href="{% url 'shipment_detail' shipment.shipment_id %}" class="hover:underline">{{ shipment.shipment_number }}</a>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-xs font-mono text-slate-500 dark:text-slate-400">{{ shipment.tracking_number|default:"Unassigned" }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-700 dark:text-slate-300 font-semibold">{{ shipment.logistics_company.company_name|default:"Consortium Node Fleet" }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-xs">
+                                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-400">{{ shipment.shipment_status }}</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-xs font-semibold">
+                                    <a href="{% url 'shipment_detail' shipment.shipment_id %}" class="text-xs font-bold px-2.5 py-1 rounded bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 dark:hover:bg-slate-900 text-slate-600 dark:text-slate-400 transition-colors">Track Cargo</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="border border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-12 text-center">
+        <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300">No Shipping Manifests Active</h3>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

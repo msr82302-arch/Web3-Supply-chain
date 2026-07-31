@@ -1,0 +1,26 @@
+/* SCM platform - Accounts CSS Entry Configuration
+ * Location: static/css/accounts.css
+ */
+
+/* Tailwind v4 Directives - Commented out to prevent browser-level 404 relative requests.
+   Tailwind is loaded globally via CDN script in base.html. */
+/* @import "tailwindcss"; */
+
+/* Enterprise Modular Component Layer Bindings */
+@import "./base.css";
+@import "./theme.css";
+@import "./forms.css";
+@import "./buttons.css";
+@import "./cards.css";
+@import "./navbar.css";
+@import "./sidebar.css";
+@import "./tables.css";
+@import "./dashboard.css";
+@import "./animations.css";
+@import "./responsive.css";
+@import "./dark.css";
+
+/* Custom Overrides Container Block */
+input, select, button {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}

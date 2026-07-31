@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI Model Screen Matrix | Console{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200/80 pb-5 dark:border-slate-800/80 transition-colors">
+        <div>
+            <h1 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-wider">Automated AI Telemetry Screening</h1>
+            <p class="text-xs text-slate-400 mt-1">Immutable model evaluations, risk probability scoring matrices, and cognitive engine version tags.</p>
+        </div>
+        <a href="{% url 'analytics:analytics_dashboard' %}" class="h-9 px-4 inline-flex items-center justify-center rounded-lg border border-slate-800 text-slate-500 text-xs font-semibold bg-slate-900/20 hover:bg-slate-900 text-slate-400 hover:text-white transition-colors">🡔 Return Dashboard</a>
+    </div>
+
+    {% if analysis_list %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 font-sans">
+        {% for audit in analysis_list %}
+        <div class="bg-slate-900/20 border border-slate-800 rounded-xl p-5 flex flex-col justify-between border-t-2 {% if audit.prediction == 'FLAGGED' or audit.prediction == 'ANOMALY' %}border-t-red-500/60{% else %}border-t-sky-500/60{% endif %}">
+            <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-[9px] font-mono tracking-widest text-slate-400 uppercase font-black">{{ audit.analysis_type }}</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-black tracking-wide uppercase {% if audit.prediction == 'FLAGGED' or audit.prediction == 'ANOMALY' %}bg-red-500/10 text-red-400 border border-red-500/20{% else %}bg-sky-500/10 text-sky-400 border border-sky-500/20{% endif %}">
+                        {{ audit.prediction }}
+                    </span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-white truncate" title="{{ audit.product.product_name }}">{{ audit.product.product_name|default:"General Tracking Node" }}</h3>
+                    <p class="text-[11px] font-mono text-slate-400 mt-1">Confidence Accuracy: <span class="font-bold text-slate-300 font-mono">{{ audit.confidence_score }}%</span></p>
+                </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-800 text-[10px] font-mono text-slate-400 flex justify-between">
+                <span title="Model Strategy: {{ audit.model_name }}">Engine: {{ audit.model_name|truncatechars:12 }}</span>
+                <span>v{{ audit.model_version }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="border border-dashed border-slate-800 rounded-xl p-12 text-center font-sans">
+        <h3 class="text-sm font-bold text-slate-500 font-mono">Model Telemetry Queue Idle</h3>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

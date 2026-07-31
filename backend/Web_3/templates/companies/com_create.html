@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- Subheader Status Telemetry Strip -->
+<div class="bg-slate-900/20 border-b border-slate-800/40 py-2.5 -mt-8 mb-8">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-xs font-mono text-slate-500 flex items-center space-x-2 select-none">
+        <span>Network</span>
+        <span class="text-slate-700">/</span>
+        <span class="text-slate-500">Registry Index</span>
+        <span class="text-slate-700">/</span>
+        <span class="text-slate-400">Initialize Fresh Node Instance</span>
+    </div>
+</div>
+
+<div class="mx-auto max-w-xl bg-slate-900/20 border border-slate-800/80 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur">
+    <!-- Form Title Area -->
+    <div class="mb-6 border-b border-slate-800 pb-5">
+        <h2 class="text-xl font-bold text-white tracking-tight">Onboard Ledger Node Instance</h2>
+        <p class="mt-1.5 text-xs text-slate-400 font-mono">Deploy a fresh organization target space block to the cluster registry.</p>
+    </div>
+
+    <!-- Exception Error Reporter Overlay -->
+    {% if error_message %}
+    <div class="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-xs font-mono shadow-inner">
+        <span class="font-bold">Deployment Refusal Exception:</span> {{ error_message }}
+    </div>
+    {% endif %}
+
+    <!-- Secure Form Structure Pipeline -->
+    <form method="POST" action="{% url 'company_create' %}" class="space-y-5 text-sm">
+        {% csrf_token %}
+        
+        <!-- Corporate Name Input Row -->
+        <div>
+            <label for="company_name" class="block font-bold text-slate-300 mb-1.5">Company Legal Title Name</label>
+            <input type="text" name="company_name" id="company_name" required placeholder="e.g. Nexus Global Transports" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none transition-all duration-150">
+        </div>
+
+        <!-- Double Grid Partition Options Box -->
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <!-- Ecosystem Node Channel Options -->
+            <div>
+                <label for="company_type" class="block font-bold text-slate-300 mb-1.5">Ecosystem Channel Role</label>
+                <select name="company_type" id="company_type" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none transition-all">
+                    <option value="MANUFACTURER">Manufacturer</option>
+                    <option value="SUPPLIER">Supplier</option>
+                    <option value="DISTRIBUTOR">Distributor</option>
+                    <option value="LOGISTICS_PROVIDER">Logistics Provider</option>
+                    <option value="BUYER">Buyer</option>
+                </select>
+            </div>
+
+            <!-- Registration Fields -->
+            <div>
+                <label for="registration_number" class="block font-bold text-slate-300 mb-1.5">Registry License Identifier</label>
+                <input type="text" name="registration_number" id="registration_number" required placeholder="e.g. REG-770142" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none transition-all">
+            </div>
+        </div>
+
+        <!-- Tax Identifier Rows -->
+        <div>
+            <label for="tax_number" class="block font-bold text-slate-300 mb-1.5">Tax Allocation Cryptographic Hash</label>
+            <input type="text" name="tax_number" id="tax_number" required placeholder="e.g. TAX-TX-9908" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none transition-all">
+        </div>
+
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <!-- Email Fields -->
+            <div>
+                <label for="email" class="block font-bold text-slate-300 mb-1.5">Node Email Address</label>
+                <input type="email" name="email" id="email" placeholder="e.g. info@company.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none transition-colors">
+            </div>
+            
+            <!-- Phone Fields -->
+            <div>
+                <label for="phone" class="block font-bold text-slate-300 mb-1.5">Contact Phone</label>
+                <input type="text" name="phone" id="phone" placeholder="e.g. +1 555-0199" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none transition-colors">
+            </div>
+        </div>
+
+        <div>
+            <label for="website" class="block font-bold text-slate-300 mb-1.5">Website Domain</label>
+            <input type="text" name="website" id="website" placeholder="e.g. www.company.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none transition-colors">
+        </div>
+
+        <!-- Form Interaction Bottom Panel -->
+        <div class="pt-4 border-t border-slate-800/60 flex items-center justify-end space-x-3">
+            <a href="{% url 'company_list' %}" class="px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-400 hover:text-white font-medium transition-colors">Cancel</a>
+            <button type="submit" class="px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-white font-bold rounded-xl shadow-lg shadow-sky-500/10 transition-all duration-150 active:scale-[0.98]">
+                Commit Node to Block
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

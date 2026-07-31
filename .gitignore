@@ -1,0 +1,20 @@
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.log
+
+
+# Complete Inescapable Virtual Environment Bypasses
+V-Env/
+V-Env/**
+.Block-Env/
+.Block-Env/**
+**/V-Env/**
+**/.Block-Env/**
+
+

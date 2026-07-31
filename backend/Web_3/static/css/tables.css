@@ -1,0 +1,32 @@
+/* backend/Web_3/static/css/tables.css */
+.data-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 14px;
+}
+
+.data-table th {
+    background-color: rgba(241, 245, 249, 0.5);
+    padding: 12px 16px;
+    font-weight: 600;
+    color: #64748b;
+    border-bottom: 1px solid var(--border);
+}
+
+.data-table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--foreground);
+}
+
+.data-table tr:hover {
+    background-color: rgba(248, 250, 252, 0.5);
+}

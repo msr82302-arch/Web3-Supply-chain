@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cryptographic Twins Hub | Console{% endblock %}
+
+{% block content %}
+<div class="space-y-10">
+    <div class="border-b border-slate-800 pb-5">
+        <h1 class="text-2xl font-bold tracking-tight text-white uppercase tracking-wider">Cryptographic Token Settlement Hub</h1>
+        <p class="text-xs text-slate-400 mt-1">Platform management workspace monitoring digital twins, ERC-20 settlements, and multi-token bundles.</p>
+    </div>
+
+    <!-- ERC-721 -->
+    <div class="space-y-4">
+        <h2 class="text-xs font-black text-white uppercase tracking-widest flex items-center border-l-2 border-sky-500 pl-2">
+            ⛓️ ERC-721 Digital Twin Catalog
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for mint in mint_transactions %}
+            <div class="bg-[#111827]/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between shadow-xl">
+                <div>
+                    <span class="text-[9px] font-black tracking-widest text-sky-400 uppercase border border-sky-500/20 bg-sky-500/10 px-2.5 py-0.5 rounded-full">Twin Minted</span>
+                    <h3 class="text-sm font-bold text-white mt-3 font-mono">Token Asset UUID</h3>
+                    <p class="text-xs text-slate-400 font-mono mt-1 select-all break-all">{{ mint.nft_id|default:"Pending Block Execution" }}</p>
+                </div>
+                <div class="mt-4 pt-4 border-t border-slate-800 text-[10px] font-mono text-slate-500 flex justify-between">
+                    <span>Block: #{{ mint.block_number }}</span>
+                    <span>Fee: {{ mint.gas_fee }} GWEI</span>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-3 border border-dashed border-slate-800 rounded-2xl p-8 text-center text-slate-400 italic">
+                No ERC-721 digital twin certificates recorded.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ERC-1155 -->
+    <div class="space-y-4">
+        <h2 class="text-xs font-black text-white uppercase tracking-widest flex items-center border-l-2 border-purple-500 pl-2">
+            📦 ERC-1155 Commodity Cargo Batches
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for batch in erc1155_transactions %}
+            <div class="bg-[#111827]/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between shadow-xl border-t-2 border-t-purple-500/50">
+                <div>
+                    <span class="text-[9px] font-black tracking-widest text-purple-400 uppercase border border-purple-500/20 bg-purple-500/10 px-2.5 py-0.5 rounded-full">Multi-Token Batch</span>
+                    <h3 class="text-sm font-bold text-white mt-3 font-mono">Mix ID</h3>
+                    <p class="text-xs text-slate-400 font-mono mt-1 select-all break-all">{{ batch.transaction_id }}</p>
+                </div>
+                <div class="mt-4 pt-4 border-t border-slate-800 text-[10px] font-mono text-slate-500 flex justify-between">
+                    <span class="font-bold text-purple-400 uppercase">{{ batch.transaction_type }}</span>
+                    <span>Block: #{{ batch.block_number }}</span>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-3 border border-dashed border-slate-800 rounded-2xl p-8 text-center text-slate-400 italic">
+                No ERC-1155 commodity bundle operations registered.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ERC-20 -->
+    <div class="space-y-4">
+        <h2 class="text-xs font-black text-white uppercase tracking-widest flex items-center border-l-2 border-emerald-500 pl-2">
+            🪙 ERC-20 Financial Settlements
+        </h2>
+        {% if erc20_transactions %}
+        <div class="bg-[#111827]/80 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+            <table class="min-w-full divide-y divide-slate-800 text-sm">
+                <thead class="bg-[#030712]/50">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">TX Proof Hash</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Block</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Operation</th>
+                        <th class="px-6 py-4 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">Computational Cost</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800">
+                    {% for tx in erc20_transactions %}
+                    <tr class="hover:bg-slate-900/40 transition">
+                        <td class="px-6 py-4 whitespace-nowrap font-mono text-xs text-sky-400 font-bold select-all max-w-[300px] truncate" title="{{ tx.transaction_hash }}">{{ tx.transaction_hash }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap font-mono text-slate-400 font-semibold">#{{ tx.block_number }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">{{ tx.transaction_type }}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-xs text-slate-400 font-semibold">{{ tx.gas_fee }} GWEI</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="border border-dashed border-slate-800 rounded-2xl p-8 text-center text-slate-400 italic">
+            No ERC-20 token settlements logged.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

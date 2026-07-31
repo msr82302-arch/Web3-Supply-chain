@@ -1,0 +1,35 @@
+{# templates/components/badge.html #}
+{% comment %}
+    Enterprise System State Variant Badge Node.
+    Accepts:
+        - value (string): The label text content
+        - type (string): "success", "warning", "danger", "info", "neutral" (default)
+        - size (string): "sm", "md" (default)
+        - is_pulsing (boolean): Toggle real-time active animation loops
+{% endcomment %}
+
+<span 
+    class="inline-flex items-center font-mono font-bold tracking-wide rounded-md border 
+    {% if size == 'sm' %}px-2 py-0.5 text-[10px]{% else %}px-2.5 py-1 text-xs{% endif %} 
+    {% if type == 'success' %}bg-emerald-950/40 text-emerald-400 border-emerald-800/60
+    {% elif type == 'warning' %}bg-amber-950/40 text-amber-400 border-amber-800/60
+    {% elif type == 'danger' %}bg-rose-950/40 text-rose-400 border-rose-800/60
+    {% elif type == 'info' %}bg-sky-950/40 text-sky-400 border-sky-800/60
+    {% else %}bg-slate-800/60 text-slate-300 border-slate-700/60{% endif %}"
+    role="status"
+    aria-label="System status variant: {{ type|default:'neutral' }} - {{ value|default:'UNKNOWN' }}"
+>
+    {% if is_pulsing and type == 'success' %}
+        <span class="flex h-1.5 w-1.5 relative mr-1.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+        </span>
+    {% elif is_pulsing and type == 'danger' %}
+        <span class="flex h-1.5 w-1.5 relative mr-1.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-rose-500"></span>
+        </span>
+    {% endif %}
+    
+    {{ value|default:"UNKNOWN"|upper }}
+</span>

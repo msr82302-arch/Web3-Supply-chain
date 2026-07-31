@@ -1,0 +1,60 @@
+{# templates/components/chart_card.html #}
+{% comment %}
+    Enterprise Cryptographic Telemetry Chart Container Card.
+    Accepts:
+        - title (string): Heading context tracking identifier
+        - metrics_summary (string): Accent highlight metric number (e.g., "$1.2M" or "99.8%")
+        - labels (list/json-string): Array containing X-Axis mapping data points
+        - datasets (list of dicts): Array structure carrying value floats
+        - chart_id (string): Unique identifier token for Alpine.js instantiation hooks
+{% endcomment %}
+
+<div 
+    class="w-full bg-slate-800/50 border border-slate-700/70 rounded-2xl p-6 flex flex-col shadow-xl shadow-black/20"
+    x-data="{
+        chartId: 'chart_{{ chart_id|default:"default_node_id" }}',
+        labels: {{ labels|safe|default:'[]' }},
+        dataStream: {{ datasets|safe|default:'[]' }},
+        initChart() {
+            if(!window.ApexCharts) return;
+            const options = {
+                chart: { type: 'area', height: 240, sparkline: { enabled: false }, toolbar: { show: false }, background: 'transparent' },
+                stroke: { curve: 'smooth', width: 2, colors: ['#38bdf8'] },
+                fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05, stops: [0, 90, 100] } },
+                series: [{ name: 'Telemetry Metric Stream', data: this.dataStream }],
+                xaxis: { categories: this.labels, labels: { style: { colors: '#64748b', fontSize: '11px', fontFamily: 'Courier New' } }, axisBorder: { show: false }, axisTicks: { show: false } },
+                yaxis: { labels: { style: { colors: '#64748b', fontSize: '11px', fontFamily: 'Courier New' } } },
+                grid: { borderColor: '#334155', strokeDashArray: 4, xaxis: { lines: { show: true } } },
+                theme: { mode: 'dark' },
+                colors: ['#38bdf8']
+            };
+            const targetElement = document.getElementById(this.chartId);
+            if(targetElement) {
+                const chart = new ApexCharts(targetElement, options);
+                chart.render();
+            }
+        }
+    }"
+    x-init="initChart()"
+>
+    <div class="flex items-start justify-between mb-6">
+        <div>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 font-mono">{{ title|default:"Telemetry Visualization" }}</h4>
+            {% if metrics_summary %}
+                <p class="text-2xl font-black text-white font-mono mt-1 tracking-tight">{{ metrics_summary }}</p>
+            {% endif %}
+        </div>
+        <div class="text-[10px] font-mono font-bold text-sky-400 px-2 py-0.5 bg-sky-950/50 border border-sky-900/60 rounded">REALTIME_STREAM</div>
+    </div>
+
+    <!-- Dynamic Graphic Target Workspace Element Window -->
+    <div class="w-full flex-1 min-h-[240px] relative" id="chart_container_{{ chart_id|default:'default_node_id' }}">
+        {% if not datasets %}
+            <!-- Absolute Empty Telemetry Verification Block Fallback Data State Container -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-slate-900/40 rounded-xl border border-dashed border-slate-700/60">
+                <p class="text-xs font-mono font-bold text-slate-500 uppercase tracking-widest">No active dataset sequences logged across view scope parameter arrays.</p>
+            </div>
+        {% endif %}
+        <div :id="chartId" class="w-full h-full"></div>
+    </div>
+</div>

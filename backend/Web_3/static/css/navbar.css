@@ -1,0 +1,10 @@
+/* backend/Web_3/static/css/navbar.css */
+.app-navbar {
+    height: 64px;
+    background-color: var(--panel);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+}

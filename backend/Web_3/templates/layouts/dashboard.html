@@ -1,0 +1,41 @@
+<!-- File Location: templates/layouts/dashboard_layout.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block layout_wrapper %}
+<div class="flex h-screen overflow-hidden">
+    
+    <!-- Desktop Side Panel Sidebar Draw Segment Slot -->
+    <div class="hidden md:flex md:flex-shrink-0 md:w-64 border-r border-slate-200/80 bg-white dark:border-slate-800/80 dark:bg-slate-900">
+        {% include 'components/sidebar.html' %}
+    </div>
+
+    <!-- Mobile Drawer Sidebar Off-Canvas Viewport Interceptor -->
+    {% include 'components/mobile_nav.html' %}
+
+    <!-- Main Dynamic Content Workspace Frame Canvas -->
+    <div class="flex flex-col flex-1 w-0 overflow-hidden">
+        
+        <!-- Standard Top Control Header Strip -->
+        {% include 'components/topbar.html' %}
+
+        <!-- Central Document Flow Axis Viewport Container -->
+        <main class="flex-1 relative overflow-y-auto focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sky-500 py-6 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto space-y-6">
+                
+                <!-- Dynamic Navigation Trail Anchor Block Component -->
+                {% include 'components/breadcrumbs.html' %}
+
+                <!-- Content Wrapper Target Slot for Sub-module Templates -->
+                <div class="space-y-6 animate-fade-in">
+                    {% block content %}{% endblock %}
+                </div>
+                
+            </div>
+        </main>
+        
+        <!-- Standard Workspace Global Layout Footer Panel -->
+        {% include 'components/footer.html' %}
+    </div>
+</div>
+{% endblock %}

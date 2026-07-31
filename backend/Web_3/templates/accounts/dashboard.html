@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 flex">
+    
+    <!-- Unified Left Sidebar Panel -->
+    <aside class="w-64 bg-slate-900 text-white flex flex-col hidden md:flex">
+        <div class="p-6 border-b border-slate-800">
+            <h2 class="text-xl font-bold tracking-wider text-blue-400">{{ GLOBAL_COMPANY.company_name|default:"Platform Node" }}</h2>
+            <p class="text-xs text-slate-400 mt-1 uppercase font-semibold tracking-widest">{{ GLOBAL_ROLE }} Interface</p>
+        </div>
+        
+        <nav class="flex-1 p-4 space-y-1">
+            <a href="{% url 'accounts:dashboard' %}" class="flex items-center px-4 py-2 text-sm bg-slate-800 rounded-lg text-white font-medium">
+                Workspace Dashboard
+            </a>
+            
+            <!-- Conditional Workflow Module: Manufacturer Actions -->
+            {% if IS_MANUFACTURER %}
+                <div class="pt-4 pb-1 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Manufacturing Ops</div>
+                <a href="{% url 'product_create' %}" class="flex items-center px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition">
+                    Provision Batch Product
+                </a>
+                <!-- FIXED: Updated reverse lookup namespace from nft_hub to nft:nft_list [1] -->
+                <a href="{% url 'nft:nft_list' %}" class="flex items-center px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition">
+                    Mint Digital Twin NFT
+                </a>
+            {% endif %}
+
+            <!-- Conditional Workflow Module: Logistics Providers -->
+            {% if IS_LOGISTICS %}
+                <div class="pt-4 pb-1 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Logistics Routing</div>
+                <!-- FIXED: Replaced hardcoded manifests link with dynamic url reverse tag -->
+                <a href="{% url 'shipment_list' %}" class="flex items-center px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition">
+                    Active Consignments
+                </a>
+            {% endif %}
+
+            <!-- Conditional Workflow Module: NFT Asset Buyers -->
+            {% if IS_BUYER %}
+                <div class="pt-4 pb-1 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Marketplace Interface</div>
+                <!-- FIXED: Replaced hardcoded browse link with dynamic url reverse tag -->
+                <a href="{% url 'product_list' %}" class="flex items-center px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition">
+                    Verify & Order Products
+                </a>
+                <!-- FIXED: Replaced hardcoded wallet link with dynamic url reverse tag -->
+                <a href="{% url 'nft:nft_list' %}" class="flex items-center px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition">
+                    My Provenance Certificates
+                </a>
+            {% endif %}
+
+            <!-- Conditional Workflow Module: Supply Chain Auditors -->
+            {% if IS_AUDITOR %}
+                <div class="pt-4 pb-1 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Compliance Review</div>
+                <!-- FIXED: Replaced hardcoded audit logs link with dynamic url reverse tag -->
+                <a href="{% url 'analytics:analytics_dashboard' %}" class="flex items-center px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition">
+                    Inspect Ledger Blocks
+                </a>
+            {% endif %}
+        </nav>
+    </aside>
+
+    <!-- Main Workspace Content Node -->
+    <main class="flex-1 p-8">
+        <header class="flex justify-between items-center mb-8 pb-4 border-b">
+            <div>
+                <h1 class="text-3xl font-extrabold text-slate-900">Workspace Dashboard</h1>
+                <p class="text-sm text-slate-500 mt-1">Operator Profile: <span class="font-semibold text-slate-700">{{ operator.first_name }} {{ operator.last_name }}</span></p>
+            </div>
+            <a href="{% url 'accounts:logout' %}" class="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-sm transition">
+                Terminate Session
+            </a>
+        </header>
+
+        {% if messages %}
+            <div class="mb-6 space-y-2">
+                {% for message in messages %}
+                    <div class="p-4 rounded-lg text-sm font-medium {% if message.tags == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Content Grid Modules -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-xl border shadow-sm">
+                <h3 class="text-lg font-bold text-slate-800 mb-2">Cryptographic Node Info</h3>
+                <p class="text-sm text-slate-600">Secure Identifier token: <code class="text-xs bg-slate-100 px-1 rounded">{{ operator.user_id }}</code></p>
+                <p class="text-sm text-slate-600 mt-1">Tenant Registration hash: <code class="text-xs bg-slate-100 px-1 rounded">{{ GLOBAL_COMPANY.company_id|default:"N/A" }}</code></p>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

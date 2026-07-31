@@ -1,0 +1,27 @@
+/* SCM platform - Color Token Maps
+ * Location: static/css/theme.css
+ */
+
+:root {
+    --background: #f8fafc;
+    --foreground: #0f172a;
+    --panel: #ffffff;
+    --border: #e2e8f0;
+    --input-bg: rgba(248, 250, 252, 0.5);
+    --input-color: #0f172a;
+    --input-focus: #0ea5e9;
+    --btn-primary: #0284c7;
+    --btn-primary-hover: #0369a1;
+}
+
+.dark {
+    --background: #02040a;
+    --foreground: #f1f5f9;
+    --panel: #090d16;
+    --border: #1e293b;
+    --input-bg: rgba(15, 23, 42, 0.6);
+    --input-color: #f1f5f9;
+    --input-focus: #38bdf8;
+    --btn-primary: #0284c7;
+    --btn-primary-hover: #0369a1;
+}

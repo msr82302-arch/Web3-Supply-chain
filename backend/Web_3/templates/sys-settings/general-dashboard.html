@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Load custom settings styling pointing to your exact file name -->
+<link rel="stylesheet" href="{% static 'css/sys-setting.css' %}">
+
+<div class="min-h-screen bg-gray-950 text-gray-100 font-sans p-6">
+    <div class="max-w-7xl mx-auto space-y-6">
+        
+        <!-- Dashboard Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-gray-800 pb-6">
+            <div>
+                <h1 class="text-3xl font-extrabold text-white tracking-tight">System Settings Engine</h1>
+                <p class="text-sm text-gray-400 mt-1">Configure localized variables, security policies, alert dispatchers, and smart contract integrations.</p>
+            </div>
+            <div class="mt-4 md:mt-0">
+                <span class="inline-flex items-center px-4 py-2 rounded-full text-xs font-semibold bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                    <span class="w-2 h-2 mr-2 rounded-full bg-teal-400 animate-pulse"></span>
+                    Console Active
+                </span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Navigation Tabs -->
+            <div class="lg:col-span-1 space-y-2">
+                <nav class="space-y-1">
+                    <button onclick="loadTab('general', this)" 
+                            class="w-full flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition bg-gray-850 text-white border-l-4 border-teal-500 hover:bg-gray-800 cursor-pointer text-left focus:outline-none">
+                        <span class="mr-3">⚙️</span> General Engine
+                    </button>
+                    
+                    <button onclick="loadTab('security', this)" 
+                            class="w-full flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition text-gray-400 hover:bg-gray-900 hover:text-white cursor-pointer text-left focus:outline-none">
+                        <span class="mr-3">🛡️</span> Security Rules
+                    </button>
+
+                    <button onclick="loadTab('notifications', this)" 
+                            class="w-full flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition text-gray-400 hover:bg-gray-900 hover:text-white cursor-pointer text-left focus:outline-none">
+                        <span class="mr-3">📧</span> Mail & Alerts
+                    </button>
+
+                    <button onclick="loadTab('blockchain', this)" 
+                            class="w-full flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition text-gray-400 hover:bg-gray-900 hover:text-white cursor-pointer text-left focus:outline-none">
+                        <span class="mr-3">🌐</span> Web3 & Blockchain
+                    </button>
+
+                    <button onclick="loadTab('api-keys', this)" 
+                            class="w-full flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition text-gray-400 hover:bg-gray-900 hover:text-white cursor-pointer text-left focus:outline-none">
+                        <span class="mr-3">🔑</span> Integration APIs
+                    </button>
+
+                    <div class="pt-4 border-t border-gray-800 my-2"></div>
+
+                    <button onclick="loadTab('users', this)" 
+                            class="w-full flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition text-gray-400 hover:bg-gray-900 hover:text-white cursor-pointer text-left focus:outline-none">
+                        <span class="mr-3">👥</span> User Directory
+                    </button>
+
+                    <button onclick="loadTab('roles', this)" 
+                            class="w-full flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition text-gray-400 hover:bg-gray-900 hover:text-white cursor-pointer text-left focus:outline-none">
+                        <span class="mr-3">💼</span> Positional Roles
+                    </button>
+
+                    <button onclick="loadTab('audit-logs', this)" 
+                            class="w-full flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition text-gray-400 hover:bg-gray-900 hover:text-white cursor-pointer text-left focus:outline-none">
+                        <span class="mr-3">📜</span> Audit Logging
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab Output Panel -->
+            <div class="lg:col-span-3 bg-gray-900 border border-gray-800 rounded-2xl p-6 min-h-[500px] relative">
+                <!-- Floating Streaming Loader -->
+                <div id="loading-indicator" style="display: none; opacity: 0;" class="absolute top-4 right-4 flex items-center space-x-2 text-teal-400 bg-gray-950 px-3 py-1.5 rounded-full border border-gray-800 transition-opacity duration-250">
+                    <span class="animate-spin inline-block w-4 h-4 border-2 border-teal-400 border-t-transparent rounded-full"></span>
+                    <span class="text-xs font-semibold">Streaming Node...</span>
+                </div>
+
+                <div id="tab-content">
+                    <div class="flex items-center justify-center h-[400px]">
+                        <span class="animate-spin inline-block w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Pure Vanilla JS AJAX Router with Dynamic URL resolution -->
+<script>
+    function loadTab(tabName, button) {
+        const contentArea = document.getElementById('tab-content');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        
+        // Show loading indicator
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'flex';
+            loadingIndicator.style.opacity = '1';
+        }
+        
+        // Render spinner inside workspace panel
+        contentArea.innerHTML = `
+            <div class="flex items-center justify-center h-[400px]">
+                <span class="animate-spin inline-block w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full"></span>
+            </div>
+        `;
+        
+        // Resolves url prefix dynamically using Django URL engine to bypass 404s
+        const url = "{% url 'sys_setting:settings-tab-render' 'TAB_NAME' %}".replace('TAB_NAME', tabName);
+        
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(html => {
+                contentArea.innerHTML = html;
+                
+                // Re-evaluate scripts inside injected HTML (needed for Alpine.js bindings)
+                const scripts = contentArea.querySelectorAll('script');
+                scripts.forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading tab:', error);
+                contentArea.innerHTML = `
+                    <div class="flex flex-col items-center justify-center text-center h-[400px] space-y-4">
+                        <span class="text-rose-400 text-3xl">⚠️</span>
+                        <p class="text-sm text-gray-400">Failed to load configuration node. Connection dropped.</p>
+                    </div>
+                `;
+            })
+            .finally(() => {
+                // Hide loading indicator
+                if (loadingIndicator) {
+                    loadingIndicator.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingIndicator.style.display = 'none';
+                    }, 250);
+                }
+            });
+            
+        // Manage active sidebar buttons
+        if (button) {
+            const nav = button.parentElement;
+            const buttons = nav.getElementsByTagName('button');
+            for (let btn of buttons) {
+                btn.classList.remove('bg-gray-850', 'text-white', 'border-l-4', 'border-teal-500');
+                btn.classList.add('text-gray-400', 'hover:bg-gray-900', 'hover:text-white');
+            }
+            button.classList.add('bg-gray-850', 'text-white', 'border-l-4', 'border-teal-500');
+            button.classList.remove('text-gray-400', 'hover:bg-gray-900', 'hover:text-white');
+        }
+    }
+
+    // Load first tab automatically
+    document.addEventListener("DOMContentLoaded", () => {
+        const firstButton = document.querySelector('nav button');
+        if (firstButton) {
+            loadTab('general', firstButton);
+        }
+    });
+</script>
+{% endblock %}

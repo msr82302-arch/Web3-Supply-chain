@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- Subheader Status Telemetry Strip -->
+<div class="bg-slate-900/20 border-b border-slate-800/40 py-2.5 -mt-8 mb-8">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-xs font-mono text-slate-500 flex items-center space-x-2 select-none">
+        <span>Network</span>
+        <span class="text-slate-700">/</span>
+        <span class="text-slate-500">Registry Index</span>
+        <span class="text-slate-700">/</span>
+        <span class="text-slate-400">Parameter Configuration</span>
+    </div>
+</div>
+
+<div class="mx-auto max-w-xl bg-slate-900/20 border border-slate-800/80 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur">
+    <!-- Header Block Information -->
+    <div class="mb-6 border-b border-slate-800 pb-5">
+        <h2 class="text-xl font-bold text-white tracking-tight">Configure Compliance Parameters</h2>
+        <div class="mt-1.5 flex items-center space-x-1.5 text-xs text-slate-400 font-mono">
+            <span>Modifying entity node reference:</span>
+            <span data-crypto-truncate="true" class="bg-slate-950/60 px-2 py-0.5 rounded text-sky-400 border border-slate-800/80 font-bold font-mono">{{ company.company_id }}</span>
+        </div>
+    </div>
+
+    <!-- Form Modification Structure -->
+    <form method="POST" action="{% url 'company_update' company.company_id %}" class="space-y-5 text-sm">
+        {% csrf_token %}
+        
+        <!-- Corporate Title Input Field -->
+        <div>
+            <label for="company_name" class="block font-bold text-slate-300 mb-1.5">Enterprise Registered Legal Title</label>
+            <input type="text" name="company_name" id="company_name" value="{{ company.company_name }}" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none transition-colors">
+        </div>
+
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <!-- Node Channel Choice Matrix -->
+            <div>
+                <label for="company_type" class="block font-bold text-slate-300 mb-1.5">Network Node Classification</label>
+                <select name="company_type" id="company_type" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none transition-colors">
+                    <option value="MANUFACTURER" {% if company.company_type == "MANUFACTURER" %}selected{% endif %}>Manufacturer</option>
+                    <option value="SUPPLIER" {% if company.company_type == "SUPPLIER" %}selected{% endif %}>Supplier</option>
+                    <option value="DISTRIBUTOR" {% if company.company_type == "DISTRIBUTOR" %}selected{% endif %}>Distributor</option>
+                    <option value="LOGISTICS_PROVIDER" {% if company.company_type == "LOGISTICS_PROVIDER" %}selected{% endif %}>Logistics Provider</option>
+                    <option value="BUYER" {% if company.company_type == "BUYER" %}selected{% endif %}>Buyer</option>
+                </select>
+            </div>
+
+            <!-- Administrative Protected Telemetry Indicator Block -->
+            <div>
+                <label class="block font-bold text-slate-500 mb-1.5">Current Verification State</label>
+                <div class="w-full bg-slate-950/60 border border-slate-800/80 rounded-xl px-4 py-2.5 font-mono text-[10px] select-none h-[42px] flex items-center">
+                    {% if company.is_verified %}
+                    <span class="text-emerald-400 font-bold tracking-wide">● REGISTERED MAINNET VERIFIED</span>
+                    {% else %}
+                    <span class="text-amber-400 font-bold tracking-wide">○ PENDING ADMINISTRATIVE AUDIT</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <!-- Registration Parameter Fields -->
+            <div>
+                <label for="registration_number" class="block font-bold text-slate-300 mb-1.5">Registry Number</label>
+                <input type="text" name="registration_number" id="registration_number" value="{{ company.registration_number|default:'' }}" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none transition-colors">
+            </div>
+            
+            <!-- Tax Parameter Fields -->
+            <div>
+                <label for="tax_number" class="block font-bold text-slate-300 mb-1.5">Tax Allocation Hash</label>
+                <input type="text" name="tax_number" id="tax_number" value="{{ company.tax_number|default:'' }}" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none transition-colors">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <!-- Email Fields -->
+            <div>
+                <label for="email" class="block font-bold text-slate-300 mb-1.5">Node Email Address</label>
+                <input type="email" name="email" id="email" value="{{ company.email|default:'' }}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none transition-colors">
+            </div>
+            
+            <!-- Phone Fields -->
+            <div>
+                <label for="phone" class="block font-bold text-slate-300 mb-1.5">Contact Phone</label>
+                <input type="text" name="phone" id="phone" value="{{ company.phone|default:'' }}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none transition-colors">
+            </div>
+        </div>
+
+        <div>
+            <label for="website" class="block font-bold text-slate-300 mb-1.5">Website Domain</label>
+            <input type="text" name="website" id="website" value="{{ company.website|default:'' }}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none transition-colors">
+        </div>
+
+        <div>
+            <label for="logo_url" class="block font-bold text-slate-300 mb-1.5">Logo URL Path</label>
+            <input type="text" name="logo_url" id="logo_url" value="{{ company.logo_url|default:'' }}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none transition-colors">
+        </div>
+
+        <!-- Form Interaction Bottom Panel -->
+        <div class="pt-4 border-t border-slate-800/60 flex items-center justify-end space-x-3">
+            <a href="{% url 'company_list' %}" class="px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-400 hover:text-white font-medium transition-colors">Cancel</a>
+            <button type="submit" class="px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-white font-bold rounded-xl shadow-lg shadow-sky-500/10 transition-all duration-150 active:scale-[0.98]">
+                Commit Node Changes
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

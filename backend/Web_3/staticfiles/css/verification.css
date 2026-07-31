@@ -1,0 +1,11 @@
+/* SCM platform - Verification Stylesheet Overrides
+ * Location: static/css/verification.css
+ */
+
+.verification-outcome-glow {
+    box-shadow: 0 4px 24px rgba(16, 185, 129, 0.1);
+}
+
+.verification-outcome-danger-glow {
+    box-shadow: 0 4px 24px rgba(239, 68, 68, 0.1);
+}

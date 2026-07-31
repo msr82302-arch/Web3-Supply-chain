@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#030712]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web3 Supply Chain Core Ledger</title>
+    <!-- Live High-Performance CDN Delivery -->
+    <script src="https://tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cryptoblue: '#0ea5e9',
+                        cryptodark: '#0b0f19',
+                        panelbg: '#111827',
+                        cyberpurple: '#6366f1'
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/css">
+        input:focus, select:focus, textarea:focus {
+            border-color: #0ea5e9 !important;
+            box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.15) !important;
+            background-color: #020617 !important;
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #030712; }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #374151; }
+    </style>
+</head>
+<body class="h-full font-sans text-slate-100 antialiased bg-gradient-to-b from-[#0b0f19] to-[#030712]">
+    <div class="min-h-full flex flex-col">
+        <!-- Global Header Bar -->
+        <header class="border-b border-slate-800/80 bg-[#030712]/80 backdrop-blur sticky top-0 z-50">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center font-black tracking-wider text-sm shadow-lg shadow-sky-500/20 text-white animate-pulse">W3</div>
+                    <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">SupplyChain OS</span>
+                </div>
+                <nav class="flex items-center space-x-6 text-sm font-semibold text-slate-400">
+                    <a href="/companies/" class="text-sky-400 hover:text-sky-300 transition-colors">Ecosystem Registry</a>
+                    <div class="h-4 w-px bg-slate-800"></div>
+                    <span class="text-xs font-mono bg-slate-900/80 px-2.5 py-1 rounded-md text-emerald-400 border border-emerald-500/20">● Node: Mainnet_Sec_01</span>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Workspace Area -->
+        <main class="flex-1 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 w-full">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

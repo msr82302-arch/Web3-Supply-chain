@@ -1,0 +1,52 @@
+{# templates/components/card.html #}
+{% comment %}
+    Enterprise Layout Data Card Layer Component.
+    Accepts:
+        - title (string): Header section block title string text
+        - subtitle (string): Descriptive subtitle context string
+        - header_actions (html): Optional HTML component slots for injection buttons
+        - footer_content (html): Optional footer interaction HTML slot
+        - padding_style (string): Custom padding spacing tailwind override flag parameters
+{% endcomment %}
+
+<section 
+    class="w-full bg-slate-800/50 border border-slate-700/70 rounded-2xl shadow-xl shadow-black/20 overflow-hidden flex flex-col transition-all duration-300 hover:border-slate-600/80"
+    aria-labelledby="card_title_{{ title|slugify|default:'generic' }}"
+>
+    <!-- Card Top Header Border Matrix Row -->
+    {% if title or subtitle or header_actions %}
+        <div class="px-6 py-4 bg-slate-900/40 border-b border-slate-800 flex items-center justify-between gap-4">
+            <div>
+                {% if title %}
+                    <h3 id="card_title_{{ title|slugify }}" class="text-sm font-bold text-white uppercase tracking-wider font-mono">
+                        {{ title }}
+                    </h3>
+                {% endif %}
+                {% if subtitle %}
+                    <p class="text-xs text-slate-400 mt-1 font-sans font-medium leading-relaxed">
+                        {{ subtitle }}
+                    </p>
+                {% endif %}
+            </div>
+            {% if header_actions %}
+                <div class="flex items-center space-x-2 shrink-0">
+                    {{ header_actions|safe }}
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <!-- Core Layout Content Block Container Workspace -->
+    <div class="flex-1 {% if padding_style %}{{ padding_style }}{% else %}p-6{% endif %} text-slate-200">
+        {% block card_body %}
+            {{ card_content|default:"No operational context metrics available inside this data segment node view slot." }}
+        {% endblock card_body %}
+    </div>
+
+    <!-- Optional Interaction Action Footer Block Section -->
+    {% if footer_content %}
+        <div class="px-6 py-4 bg-slate-900/50 border-t border-slate-800/80 flex items-center justify-end gap-3">
+            {{ footer_content|safe }}
+        </div>
+    {% endif %}
+</section>

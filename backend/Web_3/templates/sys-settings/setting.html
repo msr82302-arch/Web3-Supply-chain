@@ -1,0 +1,51 @@
+<div class="space-y-6" x-data="{ 
+    loading: false, message: '', error: '',
+    submitForm() {
+        this.loading = true; this.message = ''; this.error = '';
+        fetch('{% url "sys_setting:api-general" %}', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+            body: JSON.stringify(Object.fromEntries(new FormData($refs.form)))
+        })
+        .then(res => res.json())
+        .then(data => { if(data.status === 'success') this.message = data.message; else this.error = 'Input configuration validation failed.'; })
+        .catch(() => this.error = 'Network connection dropped.')
+        .finally(() => this.loading = false);
+    }
+}">
+    <div>
+        <h1 class="text-2xl font-bold tracking-tight text-white">General Engine Settings</h1>
+        <p class="text-sm text-gray-400 mt-1">Configure core localized parameters and application identification tags.</p>
+    </div>
+
+    <div x-show="message" class="p-4 bg-emerald-900/40 border border-emerald-500/20 text-emerald-400 text-sm rounded-xl" x-cloak x-text="message"></div>
+    <div x-show="error" class="p-4 bg-rose-900/40 border border-rose-500/20 text-rose-400 text-sm rounded-xl" x-cloak x-text="error"></div>
+
+    <form x-ref="form" @submit.prevent="submitForm()" class="bg-gray-800/40 border border-gray-700/60 rounded-2xl p-6 space-y-6 shadow-xl">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Application Identifier Title</label>
+                <input type="text" name="application_name" value="{{ settings.application_name }}" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-teal-500 transition font-medium">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Company Name</label>
+                <input type="text" name="company_name" value="{{ settings.company_name|default:'' }}" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-teal-500 transition">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">System Support Email</label>
+                <input type="email" name="company_email" value="{{ settings.company_email|default:'' }}" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-teal-500 transition">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Operational Currency</label>
+                <input type="text" name="currency" value="{{ settings.currency }}" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-teal-500 transition">
+            </div>
+        </div>
+
+        <div class="flex justify-end pt-4 border-t border-gray-700/50">
+            <button type="submit" class="bg-teal-500 hover:bg-teal-400 text-gray-900 font-bold px-6 py-3 rounded-xl transition flex items-center" :disabled="loading">
+                <template x-if="loading"><span class="animate-spin inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full mr-2"></span></template>
+                <span>Commit Node Engine Updates</span>
+            </button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Initialize Waypoint Dispatch | Console{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6">
+    <div>
+        <h1 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-wider">Initialize Waypoint Dispatch</h1>
+        <p class="text-xs text-slate-400 mt-1">Deploy an authenticated shipping manifest block mapping logistics carriers [1].</p>
+    </div>
+
+    {% if error_messages.global %}
+        <div class="p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold rounded-lg mb-4">{{ error_messages.global }}</div>
+    {% endif %}
+
+    <div class="bg-slate-900/20 border border-slate-800 rounded-xl shadow-2xl backdrop-blur overflow-hidden">
+        <form action="{% url 'shipment_create' order.order_id %}" method="POST" class="p-6 space-y-4 font-sans text-sm">
+            {% csrf_token %}
+            
+            <div>
+                <label for="shipment_number" class="block font-bold text-slate-300 mb-1.5">Shipping Manifest Number</label>
+                <input type="text" id="shipment_number" name="shipment_number" required placeholder="e.g., SM-2026-9908" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none font-mono">
+            </div>
+
+            <div>
+                <label for="logistics_company" class="block font-bold text-slate-300 mb-1.5">Assigned Logistics Carrier Node</label>
+                <select id="logistics_company" name="logistics_company" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none">
+                    {% for comp in carriers %}
+                        <option value="{{ comp.company_id }}">{{ comp.company_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="expected_arrival" class="block font-bold text-slate-300 mb-1.5">Expected Arrival ETA</label>
+                <input type="date" id="expected_arrival" name="expected_arrival" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none">
+            </div>
+
+            <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-800/60">
+                <a href="{% url 'order_list' %}" class="px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-400 hover:text-white font-medium transition-colors">Cancel</a>
+                <button type="submit" class="px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-white font-bold rounded-xl shadow-lg shadow-sky-500/10 transition-all duration-150"> Commit Shipping Manifest </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}ship_update.html

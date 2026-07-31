@@ -1,0 +1,111 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block title %}Product Lifecycle Trace Audit | Console{% endblock %} 
+
+{% block content %} 
+<div class="space-y-6"> 
+    <!-- Header --> 
+    <div class="flex items-center justify-between border-b border-slate-200/80 pb-5 dark:border-slate-800/80"> 
+        <div> 
+            <h1 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-wider">{{ product.product_name }}</h1> 
+            <p class="text-xs text-slate-400 mt-1">Primary key ID reference index token node tracking asset profile parameters.</p> 
+        </div> 
+        <a href="{% url 'product_list' %}" class="h-9 px-4 inline-flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 text-xs font-semibold bg-white hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors">🡔 Return Catalog</a> 
+    </div> 
+
+    <!-- Grid Columns Layout --> 
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6"> 
+         
+        <div class="md:col-span-2 space-y-6"> 
+            <!-- Specs Matrix Card -->
+            <div class="bg-white border border-slate-200/80 rounded-xl shadow-xs overflow-hidden dark:bg-slate-900 dark:border-slate-800/80"> 
+                <div class="px-5 py-4 border-b border-slate-200/80 dark:border-slate-800/80"><h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">Immutable Metadata Specs Matrix</h3></div> 
+                <div class="p-5 divide-y divide-slate-100 dark:divide-slate-800 text-xs font-sans"> 
+                    <div class="py-2.5 flex justify-between"><span class="font-bold text-slate-400 uppercase text-[10px]">Product Ident Token UUID</span><span class="font-mono text-slate-900 dark:text-white select-all">{{ product.product_id }}</span></div> 
+                    <div class="py-2.5 flex justify-between"><span class="font-bold text-slate-400 uppercase text-[10px]">Stock Keeping Unit (SKU)</span><span class="font-mono font-semibold text-slate-700 dark:text-slate-300">{{ product.sku }}</span></div> 
+                    <div class="py-2.5 flex justify-between"><span class="font-bold text-slate-400 uppercase text-[10px]">Batch Track Number</span><span class="font-mono font-semibold text-slate-700 dark:text-slate-300">{{ product.batch_number }}</span></div> 
+                    <div class="py-2.5 flex justify-between"><span class="font-bold text-slate-400 uppercase text-[10px]">Serial ID Tracker</span><span class="font-mono text-slate-700 dark:text-slate-300">{{ product.serial_number|default:"Unserialized" }}</span></div> 
+                    <div class="py-2.5 flex justify-between"><span class="font-bold text-slate-400 uppercase text-[10px]">Manufacture Timestamp</span><span class="text-slate-700 dark:text-slate-300 font-semibold">{{ product.manufacture_date|date:"Y-m-d"|default:"Not Logged" }}</span></div> 
+                    <div class="py-2.5 flex justify-between"><span class="font-bold text-slate-400 uppercase text-[10px]">Expiration Timestamp</span><span class="text-red-500 font-semibold">{{ product.expiry_date|date:"Y-m-d"|default:"Does Not Expire" }}</span></div> 
+                </div> 
+            </div> 
+
+            <!-- State Machine History Log Loop --> 
+            <div class="bg-white border border-slate-200/80 rounded-xl shadow-xs overflow-hidden dark:bg-slate-900 dark:border-slate-800/80"> 
+                <div class="px-5 py-4 border-b border-slate-200/80 dark:border-slate-800/80"><h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">Consensus Audit Status History Logs</h3></div> 
+                <div class="p-5 font-sans"> 
+                    {% if product.status_history.all %}
+                    <div class="flow-root"><ul class="-mb-8"> 
+                        {% for log in product.status_history.all %} 
+                        <li> <div class="relative pb-8"> 
+                            {% if not forloop.last %}<span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-slate-200 dark:bg-slate-800" aria-hidden="true"></span>{% endif %}
+                            <div class="relative flex space-x-3"> 
+                                <div><span class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white bg-slate-100 dark:bg-slate-950 dark:ring-slate-900 font-bold text-xs text-sky-600">✓</span></div> 
+                                <div class="flex-1 min-w-0 pt-1.5 flex justify-between space-x-4"> 
+                                    <div> 
+                                        <p class="text-xs text-slate-600 dark:text-slate-400">Transitioned to <span class="font-black text-slate-900 dark:text-white uppercase">{{ log.new_status }}</span></p> 
+                                        {% if log.remarks %}<p class="text-[11px] text-slate-400 italic mt-0.5">"{{ log.remarks }}"</p>{% endif %}
+                                    </div> 
+                                    <div class="text-right text-[10px] whitespace-nowrap text-slate-400 font-mono"> 
+                                        <span>{{ log.changed_at|date:"Y-m-d H:i" }}</span> 
+                                    </div> 
+                                </div> 
+                            </div> 
+                        </div> </li> 
+                        {% endfor %} 
+                    </ul></div> 
+                    {% else %}
+                    <p class="text-xs text-slate-400 italic text-center py-4">No structural status transformations logged for this tracking instance node yet.</p>
+                    {% endif %}
+                </div> 
+            </div> 
+        </div> 
+
+        <!-- Right Side: Certificates & QR Anchor Code --> 
+        <div class="space-y-6"> 
+            <!-- State & QR Card -->
+            <div class="bg-white border border-slate-200/80 rounded-xl shadow-xs p-5 dark:bg-slate-900 dark:border-slate-800/80 text-center font-sans"> 
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Current Ledger State</span> 
+                <div class="text-md font-black uppercase text-sky-600 tracking-wider mb-4">{{ product.current_status }}</div> 
+                
+                {% if product.qr_code %}
+                <div class="mx-auto border border-slate-100 rounded-lg p-3 inline-block bg-slate-50 dark:bg-slate-950 dark:border-slate-800">
+                    <img src="{{ product.qr_code }}" alt="Asset QR Code Anchor" class="w-32 h-32 select-all">
+                </div>
+                {% endif %}
+
+                <!-- FIXED: Render the Initialize On-Chain Twin button only if the status is MANUFACTURED [1] -->
+                {% if product.current_status == 'MANUFACTURED' %}
+                <div class="mt-4 border-t border-slate-100 dark:border-slate-800 pt-4">
+                    <a href="{% url 'nft:nft_mint' product.product_id %}" class="w-full inline-flex items-center justify-center h-10 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold shadow-lg shadow-sky-500/10 transition-all active:scale-[0.98]">
+                        Initialize On-Chain Twin
+                    </a>
+                </div>
+                {% endif %}
+            </div> 
+
+            <!-- Certificates Array Nested Loop List -->
+            <div class="bg-white border border-slate-200/80 rounded-xl shadow-xs overflow-hidden dark:bg-slate-900 dark:border-slate-800/80"> 
+                <div class="px-5 py-4 border-b border-slate-200/80 dark:border-slate-800/80"><h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">Linked Compliance Certificates</h3></div> 
+                <div class="p-5 font-sans space-y-3"> 
+                    {% if product.certificates.all %}
+                        {% for cert in product.certificates.all %} 
+                        <div class="p-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs"> 
+                            <div class="font-bold text-slate-900 dark:text-white">{{ cert.issuing_authority }}</div> 
+                            <div class="text-slate-400 font-mono text-[10px] mt-0.5">ID: {{ cert.certificate_number }}</div> 
+                            <div class="flex justify-between text-[10px] mt-2 text-slate-400 font-semibold">
+                                <span>Issued: {{ cert.issue_date|date:"Y-m-d" }}</span>
+                                <span class="text-red-400">Expires: {{ cert.expiry_date|date:"Y-m-d" }}</span>
+                            </div>
+                        </div> 
+                        {% endfor %} 
+                    {% else %}
+                        <p class="text-xs text-slate-400 italic text-center py-2">No certificates linked to this commodity block.</p>
+                    {% endif %}
+                </div> 
+            </div> 
+        </div> 
+    </div> 
+</div> 
+{% endblock %}

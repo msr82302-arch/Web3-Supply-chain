@@ -1,0 +1,33 @@
+{% extends "layouts/base_email.html" %}
+
+{% block email_title %}System Account Inbound Verification Gate{% endblock email_title %}
+{% block primary_brand_color %}#818cf8{% endblock primary_brand_color %}
+{% block header_title %}Account Inbound Handshake{% endblock header_title %}
+{% block header_meta %}GATEWAY.VERIFY{% endblock header_meta %}
+
+{% block email_content %}
+<p style="margin: 0 0 16px 0; font-size: 16px; font-weight: bold; color: #ffffff;">Welcome to the Ecosystem Matrix Framework Platform Node</p>
+<p style="margin: 0 0 30px 0; font-size: 14px; line-height: 1.6; color: #94a3b8;">Before your operator profile can safely communicate or initialize data transaction mutations across the infrastructure framework layers, you must confirm your communication address link channel access.</p>
+
+<!-- Verification Command Center Matrix Action Node -->
+<table border="0" cellspacing="0" cellpadding="0" style="margin: 30px 0; border-collapse: collapse;">
+    <tr>
+        <td align="center" style="border-radius: 12px; background-color: #818cf8;">
+            <a href="{% if activate_token %}{% url 'account_activate' uidb64=uid token=activate_token %}{% else %}#{% endif %}" target="_blank" style="display: inline-block; font-size: 13px; font-weight: bold; color: #0f172a; text-decoration: none; border-radius: 12px; letter-spacing: 0.5px; padding: 14px 30px;">
+                Verify Communication Interface Link
+            </a>
+        </td>
+    </tr>
+</table>
+
+<p style="margin: 30px 0 0 0; font-size: 11px; line-height: 1.5; color: #64748b; font-family: monospace; word-break: break-all;">
+    Verification String Context Stream Pointer Loop:<br>
+    <span style="color: #818cf8;">
+        {% if activate_token %}
+            {{ request.scheme }}://{{ request.get_host }}{% url 'account_activate' uidb64=uid token=activate_token %}
+        {% else %}
+            http://127.0.0
+        {% endif %}
+    </span>
+</p>
+{% endblock email_content %}

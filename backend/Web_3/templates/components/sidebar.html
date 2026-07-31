@@ -1,0 +1,68 @@
+<aside class="flex flex-col w-full h-full bg-[#030712] border-r border-slate-800 text-slate-400 select-none">
+    <!-- Platform Branding Header Row -->
+    <div class="flex items-center h-16 px-6 border-b border-slate-800 space-x-2.5">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-sky-500/20">
+            W3
+        </div>
+        <span class="text-sm font-extrabold tracking-tight text-white uppercase">Console Workspace</span>
+    </div>
+
+    <!-- Dynamic Context-Aware Sidebar Menus [18] -->
+    <nav class="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto text-xs font-semibold">
+        
+        <!-- Global Core Items -->
+        <a href="{% url 'dashboard:home' %}" class="flex items-center px-4 py-2.5 rounded-xl text-white bg-slate-800 hover:bg-slate-800 transition">
+            <span class="mr-3 text-sm opacity-80">📊</span> Workspace Dashboard
+        </a>
+
+        <!-- 1. MANUFACTURER OPERATIONS -->
+        {% if IS_MANUFACTURER or request.user.is_staff %}
+            <div class="pt-5 pb-1 px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Manufacturing Ops</div>
+            <a href="{% url 'product_create' %}" class="flex items-center px-4 py-2.5 rounded-xl hover:bg-slate-800/40 hover:text-white transition">
+                <span class="mr-3 text-sm opacity-60">➕</span> Provision Product Node
+            </a>
+            <a href="{% url 'nft_hub' %}" class="flex items-center px-4 py-2.5 rounded-xl hover:bg-slate-800/40 hover:text-white transition">
+                <span class="mr-3 text-sm opacity-60">⛓️</span> Mint Digital Twin NFT
+            </a>
+        {% endif %}
+
+        <!-- 2. LOGISTICS & DISPATCH -->
+        {% if IS_LOGISTICS or request.user.is_staff %}
+            <div class="pt-5 pb-1 px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Logistics Routing</div>
+            <a href="{% url 'shipment_list' %}" class="flex items-center px-4 py-2.5 rounded-xl hover:bg-slate-800/40 hover:text-white transition">
+                <span class="mr-3 text-sm opacity-60">🚚</span> Active Consignments
+            </a>
+        {% endif %}
+
+        <!-- 3. BUYER INTERFACE -->
+        {% if IS_BUYER or request.user.is_staff %}
+            <div class="pt-5 pb-1 px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Marketplace Interface</div>
+            <a href="{% url 'product_list' %}" class="flex items-center px-4 py-2.5 rounded-xl hover:bg-slate-800/40 hover:text-white transition">
+                <span class="mr-3 text-sm opacity-60">🛍️</span> Verify & Order Products
+            </a>
+            <a href="{% url 'nft_hub' %}" class="flex items-center px-4 py-2.5 rounded-xl hover:bg-slate-800/40 hover:text-white transition">
+                <span class="mr-3 text-sm opacity-60">🛡️</span> My Provenance Certificates
+            </a>
+        {% endif %}
+
+        <!-- 4. AUDITOR & COMPLIANCE -->
+        {% if IS_AUDITOR or request.user.is_staff %}
+            <div class="pt-5 pb-1 px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Compliance Review</div>
+            <a href="{% url 'analytics:analytics_dashboard' %}" class="flex items-center px-4 py-2.5 rounded-xl hover:bg-slate-800/40 hover:text-white transition">
+                <span class="mr-3 text-sm opacity-60">📜</span> Inspect Ledger Blocks
+            </a>
+        {% endif %}
+
+    </nav>
+
+    <!-- Node Network Real-time Connectivity Status Frame Footer -->
+    <div class="p-4 border-t border-slate-800 bg-[#030712]/50 text-[11px] font-medium">
+        <div class="flex items-center space-x-3">
+            <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></div>
+            <div class="flex-1 min-w-0">
+                <p class="text-slate-300 truncate font-semibold">Active Node Connection</p>
+                <p class="text-slate-500 truncate font-mono">Status Authenticated</p>
+            </div>
+        </div>
+    </div>
+</aside>

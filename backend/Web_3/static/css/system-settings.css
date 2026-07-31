@@ -1,0 +1,23 @@
+/* Core customized style definitions for the System Settings dashboard integration */
+
+.bg-gray-850 {
+    background-color: rgba(31, 41, 55, 0.5);
+}
+
+.htmx-indicator {
+    opacity: 0;
+    transition: opacity 250ms ease-in-out;
+}
+
+.htmx-request .htmx-indicator {
+    opacity: 1;
+}
+
+.htmx-request.htmx-indicator {
+    opacity: 1;
+}
+
+/* Custom switch overrides for checkbox styles */
+input[type="checkbox"]:focus {
+    box-shadow: none !important;
+}

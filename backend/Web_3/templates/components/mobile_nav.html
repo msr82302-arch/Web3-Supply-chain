@@ -1,0 +1,38 @@
+<nav 
+    class="md:hidden fixed bottom-0 left-0 right-0 bg-[#030712]/95 backdrop-blur-lg border-t border-slate-800 px-4 py-2 z-50 flex items-center justify-around shadow-inner"
+    aria-label="Responsive Mobile Terminal Infrastructure Command Panel Layer"
+>
+    <!-- Automatic Loop Mapping Sequence targeting system applications grid items lists -->
+    <a href="{% url 'dashboard:home' %}" class="flex flex-col items-center justify-center py-1 px-3 rounded-xl text-slate-400 hover:text-white">
+        <span class="text-lg">📊</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider font-mono">Dashboard</span>
+    </a>
+
+    {% if IS_MANUFACTURER or request.user.is_staff %}
+    <a href="{% url 'nft_hub' %}" class="flex flex-col items-center justify-center py-1 px-3 rounded-xl text-slate-400 hover:text-white">
+        <span class="text-lg">⛓️</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider font-mono">Twins</span>
+    </a>
+    {% endif %}
+
+    {% if IS_LOGISTICS or request.user.is_staff %}
+    <a href="{% url 'shipment_list' %}" class="flex flex-col items-center justify-center py-1 px-3 rounded-xl text-slate-400 hover:text-white">
+        <span class="text-lg">🚚</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider font-mono">Consignments</span>
+    </a>
+    {% endif %}
+
+    {% if IS_BUYER or request.user.is_staff %}
+    <a href="{% url 'product_list' %}" class="flex flex-col items-center justify-center py-1 px-3 rounded-xl text-slate-400 hover:text-white">
+        <span class="text-lg">🛍️</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider font-mono">Procure</span>
+    </a>
+    {% endif %}
+
+    {% if IS_AUDITOR or request.user.is_staff %}
+    <a href="{% url 'analytics:analytics_dashboard' %}" class="flex flex-col items-center justify-center py-1 px-3 rounded-xl text-slate-400 hover:text-white">
+        <span class="text-lg">📜</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider font-mono">Ledger</span>
+    </a>
+    {% endif %}
+</nav>

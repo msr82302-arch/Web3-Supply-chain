@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-900 text-slate-100">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Console Node Platform{% endblock title %}</title>
+    <!-- Tailwind CSS Production CDN Architecture -->
+    <script src="https://tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: { 950: '#020617', 900: '#0f172a', 800: '#1e293b', 700: '#334155' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="h-full flex flex-col font-sans antialiased">
+
+    <!-- Enterprise App Navigation Shell Layer -->
+    <header class="bg-slate-950 border-b border-slate-800 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <span class="text-sky-400 font-mono font-bold tracking-wider text-sm">LOGISTICS.MATRIX //</span>
+            <span class="text-xs uppercase font-bold text-slate-400 px-2 py-0.5 bg-slate-800 rounded">v2.6.0</span>
+        </div>
+        <nav class="flex items-center space-x-6 text-sm font-medium">
+            <a href="{% url 'settings_dashboard' %}" class="text-slate-300 hover:text-white transition">Core Settings</a>
+            <span class="text-slate-700">|</span>
+            <span class="text-slate-400 text-xs font-mono">{{ request.user.email|default:"operator@local.network" }}</span>
+        </nav>
+    </header>
+
+    <!-- Content Workspace Portal Frame -->
+    <main class="flex-1 p-8 overflow-y-auto bg-slate-900">
+        
+        <!-- Live System Django Framework Flash Message Handling Alerts -->
+        {% if messages %}
+            <div class="max-w-7xl mx-auto mb-6 space-y-2">
+                {% for message in messages %}
+                    <div class="p-4 rounded-xl text-sm font-medium border {% if message.tags == 'error' %}bg-red-950/40 border-red-800 text-red-400{% else %}bg-emerald-950/40 border-emerald-800 text-emerald-400{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="max-w-7xl mx-auto">
+            {% block content %}
+            <!-- Application sub-views will render their main dashboard code blocks right here -->
+            {% endblock content %}
+        </div>
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+{% extends "layouts/base_email.html" %}
+
+{% block email_title %}Transaction Invoice Settlement Ledger{% endblock email_title %}
+
+<!-- Corrected block name to bind with your fixed base template font colors -->
+{% block brand_hex_color %}#34d399{% endblock brand_hex_color %}
+
+{% block header_title %}Invoice Settlement Receipt{% endblock header_title %}
+
+{% block header_meta %}
+    {% if invoice_status %}{{ invoice_status }}{% else %}LEDGER.PAID{% endif %}
+{% endblock header_meta %}
+
+{% block email_content %}
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 30px; border-collapse: collapse;">
+    <tr>
+        <td style="vertical-align: top; width: 50%;">
+            <p style="margin: 0 0 4px 0; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: bold; letter-spacing: 0.5px;">Purchasing Client Node</p>
+            <p style="margin: 0; font-size: 14px; color: #e2e8f0; font-weight: bold;">{{ buyer_name|default:"Unregistered Corporate Candidate" }}</p>
+            <p style="margin: 2px 0 0 0; font-size: 13px; color: #94a3b8;">ID: #{{ request.user.id|default:"0000" }}</p>
+        </td>
+        <td style="vertical-align: top; width: 50%; text-align: right;">
+            <p style="margin: 0 0 4px 0; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: bold; letter-spacing: 0.5px;">Invoice Reference</p>
+            <p style="margin: 0; font-size: 14px; font-family: 'Courier New', Courier, monospace; color: #34d399; font-weight: bold;">{{ order_number|default:"ORD-PREVIEW-0000" }}</p>
+            <p style="margin: 2px 0 0 0; font-size: 12px; font-family: 'Courier New', Courier, monospace; color: #64748b;">
+                {% if settlement_date %}{{ settlement_date|date:"Y-m-d" }}{% else %}Synchronized{% endif %}
+            </p>
+        </td>
+    </tr>
+</table>
+
+<!-- Itemized Billing Data Grid Matrix Table wrapper to secure border radius rendering across clients -->
+<div style="border: 1px solid #334155; border-radius: 12px; overflow: hidden; margin-top: 20px;">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #111827; color: #64748b; font-size: 11px; text-transform: uppercase; font-weight: bold;">
+                <th align="left" style="padding: 12px 15px;">Material Component Item Description</th>
+                <th align="center" style="width: 60px; padding: 12px 15px;">Qty</th>
+                <th align="right" style="width: 100px; padding: 12px 15px;">Unit Valuation</th>
+                <th align="right" style="width: 120px; padding: 12px 15px;">Subtotal Amount</th>
+            </tr>
+        </thead>
+        <tbody style="font-size: 13px;">
+            {% for item in items_list %}
+            <tr style="border-top: 1px solid #334155; color: #e2e8f0; background-color: #1e293b;">
+                <td align="left" style="font-weight: bold; color: #ffffff; padding: 12px 15px;">{{ item.product_name }}</td>
+                <td align="center" style="font-family: 'Courier New', Courier, monospace; padding: 12px 15px; color: #cbd5e1;">{{ item.quantity }}</td>
+                <td align="right" style="font-family: 'Courier New', Courier, monospace; padding: 12px 15px; color: #cbd5e1;">${{ item.unit_price|floatformat:2 }}</td>
+                <td align="right" style="font-family: 'Courier New', Courier, monospace; font-weight: bold; color: #34d399; padding: 12px 15px;">${{ item.subtotal|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr style="color: #64748b; font-style: italic; background-color: #1e293b; border-top: 1px solid #334155;">
+                <td colspan="4" align="center" style="padding: 20px;">No transaction lines logs data tracks parsed into this receipt view context.</td>
+            </tr>
+            {% endfor %}
+            <!-- Total Financial Summary Balances Data Section Row -->
+            <tr style="font-size: 14px; font-weight: bold; color: #ffffff; background-color: #111827; border-top: 1px solid #334155;">
+                <td colspan="3" align="right" style="text-transform: uppercase; font-size: 10px; color: #64748b; padding: 16px 15px; letter-spacing: 1px;">Aggregated Gross Total Settlement:</td>
+                <td align="right" style="color: #34d399; font-family: 'Courier New', Courier, monospace; padding: 16px 15px; font-size: 15px;">${{ gross_total|floatformat:2 }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Download Call To Action Action Component Routing Grid -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 35px; border-collapse: collapse;">
+    <tr>
+        <td align="center">
+            <table border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse;">
+                <tr>
+                    <td align="center" style="border-radius: 12px; background-color: #34d399;">
+                        <!-- Safe standard dynamic verification targeting custom internal reverse lookups securely -->
+                        <a href="{% if order_id %}{% url 'invoice_download' order_id %}{% else %}#{% endif %}" target="_blank" style="display: inline-block; font-size: 13px; font-weight: bold; color: #0f172a; text-decoration: none; border-radius: 12px; letter-spacing: 0.5px; padding: 14px 30px;"> Download Corporate Ledger PDF </a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+{% endblock email_content %}

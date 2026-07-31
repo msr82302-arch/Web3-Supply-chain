@@ -1,0 +1,19 @@
+<nav class="flex" aria-label="Breadcrumb navigation trail">
+    <ol role="list" class="flex items-center space-x-2 text-xs font-semibold text-slate-400 dark:text-slate-500">
+        <li>
+            <div class="flex items-center">
+                <a href="/analytics/dashboard/" class="hover:text-slate-600 dark:hover:text-slate-300 transition-colors">Ecosystem Console</a>
+            </div>
+        </li>
+        {% if breadcrumbs %}
+            {% for item in breadcrumbs %}
+            <li class="flex items-center space-x-2">
+                <span class="text-[10px] text-slate-300 dark:text-slate-700 select-none">/</span>
+                <a href="{{ item.url }}" class="{% if forloop.last %}text-slate-900 dark:text-white font-bold{% else %}hover:text-slate-600 dark:hover:text-slate-300 transition-colors{% endif %}" {% if forloop.last %}aria-current="page"{% endif %}>
+                    {{ item.title }}
+                </a>
+            </li>
+            {% endfor %}
+        {% endif %}
+    </ol>
+</nav>
