@@ -1,14 +1,14 @@
 # apps/nft/selectors.py
-from django.db.models import Q
 from apps.nft.models import NFT
 
 class NFTSelector:
     @staticmethod
     def get_visible_nfts(user):
         """
-        Enforces strict company-level tenant isolation:
+        Enforces strict company-level tenant isolation [19]:
         - Staff/Superusers can inspect all minted assets.
-        - Regular users can only access NFTs of products owned by their company.
+        - Manufacturers (with a valid company) see NFTs of products owned by their company [19].
+        - Buyers can inspect all verified digital twin certificates globally [19].
         """
         if not user or user.is_anonymous:
             return NFT.objects.none()
@@ -17,8 +17,11 @@ class NFTSelector:
         if is_super:
             return NFT.objects.all()
 
+        role_name = getattr(user.role, 'role_name', '').upper() if user.role else ''
         user_company = getattr(user, 'company', None)
-        if not user_company:
-            return NFT.objects.none()
-
-        return NFT.objects.filter(product__manufacturer_company_id=user_company.company_id)
+        
+        if role_name in ['MANUFACTURER', 'Manufacturer'] and user_company:
+            return NFT.objects.filter(product__manufacturer_company_id=user_company.company_id)
+        else:
+            # Buyers and other participants see minted digital twin certificates globally [19]
+            return NFT.objects.all()

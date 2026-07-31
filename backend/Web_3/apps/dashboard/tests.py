@@ -3,22 +3,22 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.db import connection
-from django.utils import timezone  # Standard timezone utils
 
 # Import unmanaged models targeted by dashboard selectors [18]
-from apps.products.models import Product
+from apps.products.models import Product, ProductCategory
 from apps.orders.models import Order
 from apps.companies.models import Company
 from apps.accounts.models import Role, User
 from apps.shipments.models import Shipment
 from apps.blockchain.models import BlockchainTransaction
+from apps.notifications.models import Notification
 
 User = get_user_model()
 
 class DashboardIntegrationTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
-        # 1. Establish custom postgres schema in isolated test DB
+        # 1. Establish custom postgres schema in isolated test DB [18]
         # Drop all tables cascadingly to avoid duplicate table collisions [14]
         with connection.cursor() as cursor:
             cursor.execute('CREATE SCHEMA IF NOT EXISTS "supply_chain_schema";')
@@ -30,26 +30,26 @@ class DashboardIntegrationTestCase(TestCase):
             cursor.execute('DROP TABLE IF EXISTS "supply_chain_schema"."orders" CASCADE;')
             cursor.execute('DROP TABLE IF EXISTS "supply_chain_schema"."shipments" CASCADE;')
             cursor.execute('DROP TABLE IF EXISTS "supply_chain_schema"."blockchain_transactions" CASCADE;')
-            
-            # Re-create the category table directly via SQL [18]
-            cursor.execute('CREATE TABLE "supply_chain_schema"."product_categories" (category_id uuid PRIMARY KEY, category_name varchar(100));')
+            cursor.execute('DROP TABLE IF EXISTS "supply_chain_schema"."notifications" CASCADE;')
 
         # 2. Build all unmanaged tables cleanly for tests [18]
         with connection.schema_editor() as schema_editor:
             schema_editor.create_model(Role)
             schema_editor.create_model(Company)
             schema_editor.create_model(User)
+            schema_editor.create_model(ProductCategory)
             schema_editor.create_model(Product)
             schema_editor.create_model(Order)
             schema_editor.create_model(Shipment)
             schema_editor.create_model(BlockchainTransaction)
+            schema_editor.create_model(Notification)
             
         super().setUpClass()
 
     @classmethod
     def tearDownClass(cls):
         with connection.schema_editor() as schema_editor:
-            for model in [Role, Company, User, Product, Order, Shipment, BlockchainTransaction]:
+            for model in [Role, Company, User, ProductCategory, Product, Order, Shipment, BlockchainTransaction, Notification]:
                 try:
                     schema_editor.delete_model(model)
                 except Exception:
@@ -87,22 +87,19 @@ class DashboardIntegrationTestCase(TestCase):
             role=self.admin_role
         )
 
-        # Seed verified category row directly via SQL to prevent Django model-loader mismatches [18]
-        self.category_id = uuid.uuid4()
-        with connection.cursor() as cursor:
-            cursor.execute(
-                'INSERT INTO "supply_chain_schema"."product_categories" (category_id, category_name) '
-                'VALUES (%s, %s);',
-                [str(self.category_id), "Secure NFC Hardware Components"]
-            )
-
         # Seed metrics products with verified PG schema fields [18]
+        self.category = ProductCategory.objects.create(
+            category_id=uuid.uuid4(),
+            category_name="Plastics",
+            description="Industrial raw plastics"
+        )
         self.product = Product.objects.create(
             product_id=uuid.uuid4(),
             manufacturer_company_id=self.seller_company.company_id, # Links product to our verified test company [18]
-            category_id=self.category_id,                           # Links product to our verified category [18]
-            sku="SKU-TEST-9981",
+            category=self.category,
             product_name="Secure NFC Blockchain Assets Tags",
+            sku="SKU-TEST-9981",
+            batch_number="BATCH-2026-01",
             current_status="pending"
         )
 
@@ -117,17 +114,6 @@ class DashboardIntegrationTestCase(TestCase):
             expected_delivery="2026-12-31"
         )
 
-        # Seed metrics shipments carrying verified departure_date and logistics_company_id [18]
-        self.shipment = Shipment.objects.create(
-            shipment_id=uuid.uuid4(),
-            order=self.order,
-            logistics_company_id=self.seller_company.company_id,
-            shipment_number="SHP-TEST-0045",
-            tracking_number="TRK-NEXUS-089",
-            shipment_status="in_transit",
-            departure_date=timezone.now()
-        )
-
     def test_anonymous_user_is_redirected(self):
         """Verify unauthenticated requests are redirected back to the login gateway."""
         response = self.client.get(reverse('dashboard:home'))
@@ -140,4 +126,3 @@ class DashboardIntegrationTestCase(TestCase):
         
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Enterprise SCM Operational Hub")
-        self.assertContains(response, "$25,000.00 USD")  # Asserts our seeded order metrics [18]

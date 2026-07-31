@@ -29,12 +29,13 @@
 
     <!-- Local Stylesheet Overrides -->
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}"> <!-- Corrected typo: removed 'font-medium' from href [2] -->
     <link rel="stylesheet" href="{% static 'css/buttons.css' %}">
     <link rel="stylesheet" href="{% static 'css/animations.css' %}">
     <link rel="stylesheet" href="{% static 'css/orders.css' %}">
     <link rel="stylesheet" href="{% static 'css/shipments.css' %}">
-    <link rel="stylesheet" href="{% static 'css/notifications.css' %}"> <!-- Appended Notifications Overrides -->
+    <link rel="stylesheet" href="{% static 'css/sys-setting.css' %}"> <!-- Restored missing stylesheet [2] -->
+    <link rel="stylesheet" href="{% static 'css/notifications.css' %}"> <!-- Restored missing stylesheet [2] -->
     <link rel="stylesheet" href="{% static 'css/accounts.css' %}?v=1.0.2">
 
     <style type="text/css">
@@ -51,59 +52,135 @@
     {% block extra_head %}{% endblock %}
 </head>
 <body class="h-full font-sans text-slate-100 antialiased bg-gradient-to-b from-[#0b0f19] to-[#030712]">
-    <div class="min-h-full flex flex-col">
-        <!-- Global Header Bar -->
-        <header class="border-b border-slate-800/80 bg-[#030712]/80 backdrop-blur sticky top-0 z-50">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center font-black tracking-wider text-sm shadow-lg shadow-sky-500/20 text-white animate-pulse">W3</div>
-                    <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">SupplyChain OS</span>
+    <div class="min-h-full flex flex-col md:flex-row">
+        
+        <!-- LEFT SIDEBAR NAVIGATION PANEL (Visible to logged-in users on larger screens) [18] -->
+        {% if request.user.is_authenticated %}
+        <aside class="w-64 bg-[#05070f] border-r border-slate-800/80 text-slate-400 select-none flex flex-col shrink-0 hidden md:flex min-h-screen">
+            <!-- Platform Branding Header Row -->
+            <div class="flex items-center h-16 px-6 border-b border-slate-800/80 space-x-2.5">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-sky-500/20 animate-pulse">
+                    W3
                 </div>
-                <nav class="flex items-center space-x-6 text-sm font-semibold text-slate-400">
-                    <a href="{% url 'company_list' %}" class="text-sky-400 hover:text-sky-300 transition-colors">Ecosystem Registry</a>
-                    
-                    <!-- Conditional link for authorized system administrators and platform operators -->
-                    {% if request.user.is_authenticated and request.user.is_staff %}
-                        <div class="h-4 w-px bg-slate-800"></div>
-                        <a href="{% url 'sys_setting:settings-dashboard' %}" class="hover:text-slate-200 transition-colors">System Settings</a>
-                    {% endif %}
-                    
-                    <div class="h-4 w-px bg-slate-800"></div>
-                    <span class="text-xs font-mono bg-slate-900/80 px-2.5 py-1 rounded-md text-emerald-400 border border-emerald-500/20">● Node: Mainnet_Sec_01</span>
-                </nav>
+                <span class="text-sm font-extrabold tracking-tight text-white uppercase">SupplyChain OS</span>
             </div>
-        </header>
 
-        <!-- Centralized System Flash Message Overlay -->
-        {% if messages %}
-            <div class="fixed top-4 right-4 z-50 space-y-3 max-w-sm w-full">
-                {% for message in messages %}
-                    <div x-data="{ show: true }" 
-                         x-show="show" 
-                         x-init="setTimeout(() => show = false, 5000)"
-                         x-transition:leave="transition ease-in duration-300"
-                         x-transition:leave-start="opacity-100 scale-100"
-                         x-transition:leave-end="opacity-0 scale-90"
-                         class="p-4 rounded-xl border shadow-lg flex items-start gap-3 backdrop-blur-md {% if message.tags == 'success' %}bg-emerald-950/90 border-emerald-900 text-emerald-300{% else %}bg-rose-950/90 border-rose-900 text-rose-300{% endif %}">
-                        
-                        <div class="flex-1 text-sm font-semibold">
-                            {{ message }}
-                        </div>
-                        <button @click="show = false" class="text-current opacity-50 hover:opacity-100 transition-opacity">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
+            <!-- Dynamic Context-Aware Sidebar Menus [12, 18] -->
+            <nav class="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto text-xs font-semibold">
+                
+                <a href="{% url 'dashboard:home' %}" class="flex items-center px-4 py-2.5 rounded-xl text-white bg-slate-800 hover:bg-slate-800 transition">
+                    <span class="mr-3 text-sm opacity-80">📊</span> Workspace Dashboard
+                </a>
+
+                <!-- A. MANUFACTURER WORKFLOW PATHS [12] -->
+                {% if IS_MANUFACTURER or request.user.is_staff %}
+                    <div class="pt-5 pb-1 px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Manufacturing Ops</div>
+                    <a href="{% url 'product_create' %}" class="flex items-center px-4 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white transition">
+                        <span class="mr-3 text-sm opacity-60">➕</span> Provision Product Node
+                    </a>
+                    <a href="{% url 'nft_hub' %}" class="flex items-center px-4 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white transition">
+                        <span class="mr-3 text-sm opacity-60">⛓️</span> Mint Digital Twin NFT
+                    </a>
+                {% endif %}
+
+                <!-- B. LOGISTICS WORKFLOW PATHS [12] -->
+                {% if IS_LOGISTICS or request.user.is_staff %}
+                    <div class="pt-5 pb-1 px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Logistics Routing</div>
+                    <a href="{% url 'shipment_list' %}" class="flex items-center px-4 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white transition">
+                        <span class="mr-3 text-sm opacity-60">🚚</span> Active Consignments
+                    </a>
+                {% endif %}
+
+                <!-- C. BUYER WORKFLOW PATHS [12] -->
+                {% if IS_BUYER or request.user.is_staff %}
+                    <div class="pt-5 pb-1 px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Marketplace Interface</div>
+                    <a href="{% url 'product_list' %}" class="flex items-center px-4 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white transition">
+                        <span class="mr-3 text-sm opacity-60">🛍️</span> Verify & Order Products
+                    </a>
+                    <a href="{% url 'nft_list' %}" class="flex items-center px-4 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white transition">
+                        <span class="mr-3 text-sm opacity-60">🛡️</span> My Provenance Certs
+                    </a>
+                {% endif %}
+
+                <!-- D. AUDITOR & COMPLIANCE PATHS [12] -->
+                {% if IS_AUDITOR or request.user.is_staff %}
+                    <div class="pt-5 pb-1 px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Compliance Review</div>
+                    <a href="{% url 'analytics:analytics_dashboard' %}" class="flex items-center px-4 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white transition">
+                        <span class="mr-3 text-sm opacity-60">📜</span> Inspect Ledger Blocks
+                    </a>
+                {% endif %}
+
+            </nav>
+
+            <!-- Real-time Connectivity Status Frame Footer -->
+            <div class="p-4 border-t border-slate-800 bg-[#030712]/50 text-[11px] font-medium mt-auto">
+                <div class="flex items-center space-x-3">
+                    <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-slate-300 truncate font-semibold">Active Node Connection</p>
+                        <p class="text-slate-500 truncate font-mono">Status Authenticated</p>
                     </div>
-                {% endfor %}
+                </div>
             </div>
+        </aside>
         {% endif %}
 
-        <!-- Main Workspace Area -->
-        <main class="flex-1 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 w-full">
-            {% block content %}{% endblock %}
-        </main>
-    </div>
+        <!-- MAIN SYSTEM CONTENT WRAPPER -->
+        <div class="flex-1 flex flex-col min-h-screen">
+            
+            <!-- Global Top Header Bar with Notifications & Avatars [18] -->
+            <header class="border-b border-slate-800/80 bg-[#030712]/80 backdrop-blur sticky top-0 z-50">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        {% if not request.user.is_authenticated %}
+                            <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center font-black tracking-wider text-sm shadow-lg shadow-sky-500/20 text-white animate-pulse">W3</div>
+                            <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">SupplyChain OS</span>
+                        {% else %}
+                            <!-- Mobile Hamburguer Trigger -->
+                            <button @click="mobileSidebarOpen = true" class="p-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-400 md:hidden hover:bg-slate-800 transition">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                            </button>
+                            <span class="text-xs uppercase font-extrabold tracking-widest font-mono text-slate-500 hidden md:inline">SCM Operational Console</span>
+                        {% endif %}
+                    </div>
+                    
+                    <nav class="flex items-center space-x-6 text-sm font-semibold text-slate-400">
+                        <a href="{% url 'company_list' %}" class="text-sky-400 hover:text-sky-300 transition-colors">Ecosystem Registry</a>
+                        
+                        {% if request.user.is_authenticated %}
+                            <!-- Dynamic settings cogs conditional link [18] -->
+                            {% if request.user.is_staff or GLOBAL_ROLE == 'ADMIN' or GLOBAL_ROLE == 'ADMINISTRATOR' %}
+                                <div class="h-4 w-px bg-slate-800"></div>
+                                <a href="{% url 'sys_setting:settings-dashboard' %}" class="hover:text-slate-200 transition-colors flex items-center">⚙️ Settings</a>
+                            {% endif %}
+                            
+                            <div class="h-4 w-px bg-slate-800"></div>
+                            <!-- Dynamic user initials card badge [18] -->
+                            <span class="text-xs font-mono bg-slate-900/80 px-2.5 py-1 rounded-md text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                User: {{ request.user.first_name }} ({{ GLOBAL_ROLE }})
+                            </span>
+                        {% else %}
+                            <div class="h-4 w-px bg-slate-800"></div>
+                            <span class="text-xs font-mono bg-slate-900/80 px-2.5 py-1 rounded-md text-emerald-400 border border-emerald-500/20">● Node: Mainnet_Sec_01</span>
+                        {% endif %}
+                    </nav>
+                </div>
+            </header>
 
-    <!-- SCM accounts client-side validation logic -->
-    <script src="{% static 'js/account.js' %}"></script>
-</body>
-</html>
+            <!-- Central Flash Alerts Overlay -->
+            {% if messages %}
+                <div class="fixed top-4 right-4 z-50 space-y-3 max-w-sm w-full">
+                    {% for message in messages %}
+                        <div x-data="{ show: true }" 
+                             x-show="show" 
+                             x-init="setTimeout(() => show = false, 5000)"
+                             x-transition:leave="transition ease-in duration-300"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-90"
+                             class="p-4 rounded-xl border shadow-lg flex items-start gap-3 backdrop-blur-md {% if message.tags == 'success' %}bg-emerald-950/90 border-emerald-900 text-emerald-300{% else %}bg-rose-950/90 border-rose-900 text-rose-300{% endif %}">
+                            
+                            <div class="flex-1 text-sm font-semibold">
+                                {{ message }}
+                            </div>
+                            <button @click="show = false" class="text-current opacity-50 hover:opacity-100

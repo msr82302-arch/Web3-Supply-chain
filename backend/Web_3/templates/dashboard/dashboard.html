@@ -1,4 +1,4 @@
-{% extends 'layouts/dashboard.html' %} 
+{% extends 'base.html' %} 
 {% load static %} 
 
 {% block title %}Operational Console | Overview Workspace{% endblock %} 
@@ -7,59 +7,22 @@
 <div class="space-y-6" x-data="{ dashboardScope: 'active' }"> 
     
     <!-- Header Block --> 
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-slate-200/80 pb-5 dark:border-slate-800/80 transition-colors duration-150"> 
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-slate-800 pb-5"> 
         <div> 
-            <h1 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-wider">Enterprise SCM Operational Hub</h1> 
+            <h1 class="text-xl font-black text-white uppercase tracking-wider">Enterprise SCM Operational Hub</h1> 
             <p class="text-xs text-slate-400 mt-1">Real-time status synchronization matrices monitoring cargo dispatch custody logs, serialized assets, and mainnet verification bounds.</p> 
         </div> 
 
-        <!-- Dynamic Session User Component Panel & Scope Toggles -->
+        <!-- Scope Toggles -->
         <div class="flex flex-wrap items-center gap-4 shrink-0">
-            
-            <!-- Live Operator Identification Profile Badge -->
-            {% if request.user.is_authenticated %}
-            <div class="flex items-center space-x-3 bg-slate-100 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl p-2 pr-4">
-                
-                <!-- Dynamic Avatar Initials Fallback -->
-                <div class="w-8 h-8 rounded-lg bg-teal-500/10 border border-teal-500/20 flex items-center justify-center font-mono text-xs font-bold text-teal-400 uppercase">
-                    {{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}
-                </div>
-                
-                <!-- Operator Meta Strings -->
-                <div class="flex flex-col text-left">
-                    <span class="text-xs font-bold text-slate-900 dark:text-white leading-tight">
-                        {{ request.user.first_name }} {{ request.user.last_name }}
-                    </span>
-                    <span class="text-[10px] font-mono font-bold text-sky-600 dark:text-sky-400 uppercase tracking-tight">
-                        {{ request.user.role.role_name|default:"Operational Operator" }}
-                    </span>
-                </div>
-
-                <!-- Management Action Targets -->
-                <div class="flex items-center pl-2 border-l border-slate-200 dark:border-slate-800 space-x-1.5">
-                    <!-- Secure Named URL routing to System Settings Dashboard [18] -->
-                    <a href="{% url 'sys_setting:settings-dashboard' %}" class="p-1 text-xs hover:bg-white dark:hover:bg-slate-900 rounded-md transition" title="System Settings Dashboard">
-                        ⚙️
-                    </a>
-                    <form action="{% url 'accounts:logout' %}" method="POST" class="inline-block m-0">
-                        {% csrf_token %}
-                        <button type="submit" class="p-1 text-xs hover:bg-white dark:hover:bg-slate-900 rounded-md text-slate-400 hover:text-rose-400 transition cursor-pointer" title="Terminate Session">
-                            🚪
-                        </button>
-                    </form>
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- Pipeline Scope Controls -->
-            <div class="inline-flex rounded-lg border border-slate-200 dark:border-slate-800 p-0.5 bg-slate-100 dark:bg-slate-950/60"> 
+            <div class="inline-flex rounded-lg border border-slate-800 p-0.5 bg-slate-900/60"> 
                 <button @click="dashboardScope = 'active'; $dispatch('scm:log', 'Workspace scoped to active pipelines')" 
-                        :class="dashboardScope === 'active' ? 'bg-white dark:bg-slate-900 text-sky-600 shadow-2xs font-bold' : 'text-slate-400'" 
+                        :class="dashboardScope === 'active' ? 'bg-slate-800 text-sky-400 shadow-sm font-bold' : 'text-slate-400'" 
                         class="px-3 py-1.5 text-xs rounded-md cursor-pointer transition-all">
                     Active Pipelines
                 </button> 
                 <button @click="dashboardScope = 'all'; $dispatch('scm:log', 'Workspace scoped to system history archive')" 
-                        :class="dashboardScope === 'all' ? 'bg-white dark:bg-slate-900 text-sky-600 shadow-2xs font-bold' : 'text-slate-400'" 
+                        :class="dashboardScope === 'all' ? 'bg-slate-800 text-sky-400 shadow-sm font-bold' : 'text-slate-400'" 
                         class="px-3 py-1.5 text-xs rounded-md cursor-pointer transition-all">
                     Node Archives
                 </button> 
@@ -78,39 +41,31 @@
     <!-- Section 2: Charts and Notification Layout --> 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6"> 
         <!-- Chart Column Card --> 
-        <div class="lg:col-span-2 bg-white border border-slate-200/80 rounded-xl shadow-xs p-5 dark:bg-slate-900 dark:border-slate-800/80"> 
+        <div class="lg:col-span-2 bg-[#111827]/85 border border-slate-800 rounded-xl p-5 shadow-xl"> 
             <div class="mb-4"> 
-                <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">Smart Contract Transaction Throughput Velocity</h3> 
+                <h3 class="text-sm font-semibold text-white">Smart Contract Transaction Throughput Velocity</h3> 
                 <p class="text-xs text-slate-400">Decentralized transaction minting volume indexed across monitoring parameters.</p> 
             </div> 
-            <div class="relative w-full h-64 flex flex-col justify-between p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl"> 
+            <div class="relative w-full h-64 flex flex-col justify-between p-4 bg-slate-950 border border-slate-800 rounded-xl"> 
                 <div class="flex-1 flex items-end justify-between space-x-2 pt-4"> 
-                    <div class="bg-sky-500/20 w-full h-[40%] rounded-sm hover:bg-sky-500/40 transition-all group relative"> 
-                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-sky-600 hidden group-hover:block">14K</div> 
-                    </div> 
-                    <div class="bg-sky-500/20 w-full h-[55%] rounded-sm hover:bg-sky-500/40 transition-all group relative"> 
-                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-sky-600 hidden group-hover:block">19K</div> 
-                    </div> 
-                    <div class="bg-sky-500/20 w-full h-[45%] rounded-sm hover:bg-sky-500/40 transition-all group relative"> 
-                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-sky-600 hidden group-hover:block">16K</div> 
-                    </div> 
-                    <div class="bg-sky-500/20 w-full h-[70%] rounded-sm hover:bg-sky-500/40 transition-all group relative"> 
-                        <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-sky-600 hidden group-hover:block">24K</div> 
-                    </div> 
-                    <div class="bg-sky-650 w-full h-[85%] rounded-sm relative"> 
+                    <div class="bg-sky-500/20 w-full h-[40%] rounded-sm hover:bg-sky-500/40 transition-all group relative"></div> 
+                    <div class="bg-sky-500/20 w-full h-[55%] rounded-sm hover:bg-sky-500/40 transition-all group relative"></div> 
+                    <div class="bg-sky-500/20 w-full h-[45%] rounded-sm hover:bg-sky-500/40 transition-all group relative"></div> 
+                    <div class="bg-sky-500/20 w-full h-[70%] rounded-sm hover:bg-sky-500/40 transition-all group relative"></div> 
+                    <div class="bg-sky-600 w-full h-[85%] rounded-sm relative"> 
                         <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-black text-sky-600">31K</div> 
                     </div> 
                 </div> 
-                <div class="flex justify-between border-t border-slate-200 dark:border-slate-800 pt-2 text-[9px] font-bold text-slate-400 font-mono uppercase tracking-wider"> 
+                <div class="flex justify-between border-t border-slate-800 pt-2 text-[9px] font-bold text-slate-400 font-mono uppercase tracking-wider"> 
                     <span>Segment 01</span><span>Segment 02</span><span>Segment 03</span><span>Segment 04</span><span>Active Height</span> 
                 </div> 
             </div> 
         </div> 
 
         <!-- Activity/Notifications Column Card --> 
-        <div class="bg-white border border-slate-200/80 rounded-xl shadow-xs p-5 dark:bg-slate-900 dark:border-slate-800/80"> 
+        <div class="bg-[#111827]/85 border border-slate-800 rounded-xl p-5 shadow-xl"> 
             <div class="mb-4"> 
-                <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">Live Stream Infrastructure Event Log</h3> 
+                <h3 class="text-sm font-semibold text-white">Live Stream Infrastructure Event Log</h3> 
                 <p class="text-xs text-slate-400">Streaming real-time anomalies logging directly from network sensors.</p> 
             </div> 
             <div class="space-y-3 max-h-[265px] overflow-y-auto pr-1"> 
@@ -130,15 +85,15 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"> 
         
         <!-- Recent Shipments Table Card --> 
-        <div class="bg-white border border-slate-200/80 rounded-xl shadow-xs p-5 dark:bg-slate-900 dark:border-slate-800/80"> 
+        <div class="bg-[#111827]/85 border border-slate-800 rounded-xl p-5 shadow-xl"> 
             <div class="mb-4"> 
-                <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">Active Custody Transport Dispatches</h3> 
+                <h3 class="text-sm font-semibold text-white">Active Custody Transport Dispatches</h3> 
                 <p class="text-xs text-slate-400">Latest logistical cargo tracks verified under framework smart bounds.</p> 
             </div> 
             {% if recent_shipments %} 
-                <div class="overflow-hidden border border-slate-200/80 rounded-xl dark:border-slate-800 bg-white dark:bg-slate-900"> 
-                    <table class="min-w-full divide-y divide-slate-200/80 dark:divide-slate-800/80 text-xs"> 
-                        <thead class="bg-slate-50 dark:bg-slate-950 text-slate-400 font-bold uppercase tracking-wider font-mono">
+                <div class="overflow-hidden border border-slate-800 rounded-xl bg-slate-950"> 
+                    <table class="min-w-full divide-y divide-slate-800 text-xs"> 
+                        <thead class="bg-slate-900 text-slate-400 font-bold uppercase tracking-wider font-mono">
                             <tr>
                                 <th class="px-4 py-3 text-left">Consignment Num</th>
                                 <th class="px-4 py-3 text-left">Tracking Code</th>
@@ -146,17 +101,17 @@
                                 <th class="px-4 py-3 text-left">Logged At</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-200/80 dark:divide-slate-800/80 text-slate-700 dark:text-slate-300">
+                        <tbody class="divide-y divide-slate-800 text-slate-300">
                             {% for shipment in recent_shipments %}
-                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-950/40 transition-colors">
-                                <td class="px-4 py-3 whitespace-nowrap font-bold text-slate-950 dark:text-white">{{ shipment.shipment_number }}</td>
-                                <td class="px-4 py-3 whitespace-nowrap font-mono text-slate-400">{{ shipment.tracking_number|default:"N/A" }}</td>
+                            <tr class="hover:bg-slate-900/40 transition-colors">
+                                <td class="px-4 py-3 whitespace-nowrap font-bold text-white">{{ shipment.shipment_number }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap font-mono text-slate-500">{{ shipment.tracking_number|default:"N/A" }}</td>
                                 <td class="px-4 py-3 whitespace-nowrap">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-sky-500/10 text-sky-400 border border-sky-500/20">
                                         {{ shipment.shipment_status }}
                                     </span>
                                 </td>
-                                <td class="px-4 py-3 whitespace-nowrap font-mono text-slate-400">{{ shipment.departure_date|date:"Y-m-d H:i"|default:"N/A" }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap font-mono text-slate-500">{{ shipment.departure_date|date:"Y-m-d H:i"|default:"N/A" }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -168,26 +123,26 @@
         </div> 
 
         <!-- Recent Products Table Card --> 
-        <div class="bg-white border border-slate-200/80 rounded-xl shadow-xs p-5 dark:bg-slate-900 dark:border-slate-800/80"> 
+        <div class="bg-[#111827]/85 border border-slate-800 rounded-xl p-5 shadow-xl"> 
             <div class="mb-4"> 
-                <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">Asset Verification Queue</h3> 
+                <h3 class="text-sm font-semibold text-white">Asset Verification Queue</h3> 
                 <p class="text-xs text-slate-400">Newly registered product nodes pending smart consensus confirmation.</p> 
             </div> 
             {% if recent_products %} 
-                <div class="overflow-hidden border border-slate-200/80 rounded-xl dark:border-slate-800 bg-white dark:bg-slate-900"> 
-                    <table class="min-w-full divide-y divide-slate-200/80 dark:divide-slate-800/80 text-xs"> 
-                        <thead class="bg-slate-50 dark:bg-slate-950 text-slate-400 font-bold uppercase tracking-wider font-mono">
+                <div class="overflow-hidden border border-slate-800 rounded-xl bg-slate-950"> 
+                    <table class="min-w-full divide-y divide-slate-800 text-xs"> 
+                        <thead class="bg-slate-900 text-slate-400 font-bold uppercase tracking-wider font-mono">
                             <tr>
                                 <th class="px-4 py-3 text-left">Serialized Asset Name</th>
                                 <th class="px-4 py-3 text-left">Product SKU</th>
                                 <th class="px-4 py-3 text-left">Status</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-200/80 dark:divide-slate-800/80 text-slate-700 dark:text-slate-300">
+                        <tbody class="divide-y divide-slate-800 text-slate-300">
                             {% for product in recent_products %}
                             <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-950/40 transition-colors">
-                                <td class="px-4 py-3 whitespace-nowrap font-bold text-slate-950 dark:text-white">{{ product.product_name }}</td>
-                                <td class="px-4 py-3 whitespace-nowrap font-mono text-slate-400">{{ product.sku }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap font-bold text-white">{{ product.product_name }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap font-mono text-slate-500">{{ product.sku }}</td>
                                 <td class="px-4 py-3 whitespace-nowrap">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20">
                                         {{ product.current_status }}

@@ -1,9 +1,4 @@
-
-
-
-
-
-
+# backend/Web_3/Web_3/urls.py
 
 
 
@@ -71,7 +66,7 @@ from apps.sys_setting import views
 
 
 urlpatterns = [
-    path("dashboard/", include("apps.dashboard.urls")),
+    path(" ", include("apps.dashboard.urls")),
     # ----------------------------------------------------
     # 1. CORE BACKEND REST API CHANNELS (DO NOT MODIFY)
     # ----------------------------------------------------
@@ -159,32 +154,3 @@ urlpatterns = [
 
     
 
-'''
-
-
-# backend/Web_3/Web_3/urls.py
-from django.contrib import admin
-from django.urls import path, include
-from django.views.generic import TemplateView
-
-urlpatterns = [
-    path("admin/", admin.site.urls),
-
-    path("api/v1/products/", include("apps.products.urls")),
-    path("api/v1/companies/", include("apps.companies.urls")),
-    path("api/v1/accounts/", include("apps.accounts.urls")),
-    path("api/v1/orders/", include("apps.orders.urls")),
-    path("api/v1/shipments/", include("apps.shipments.urls")),
-    path("api/v1/verification/", include("apps.verification.urls")),
-    path("api/v1/blockchain/", include("apps.blockchain.urls")),
-    path("api/v1/nft/", include("apps.nft.urls")),
-    path("api/v1/notifications/", include("apps.notifications.urls")),
-    path("api/v1/analytics/", include("apps.analytics.urls")),
-    path('test-auth/', TemplateView.as_view(
-        template_name='layouts/auth_layout.html'
-    ), name='test_auth_layout'),
-    
-    path('test-dashboard/', TemplateView.as_view(
-        template_name='layouts/dashboard_layout.html'
-    ), name='test_dashboard_layout'),
-]'''

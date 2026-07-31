@@ -14,6 +14,15 @@ from apps.accounts.services import StructuralOnboardingService
 from apps.accounts.models import User
 from apps.accounts.decorators import restrict_to_roles
 
+
+
+
+@login_required(login_url='accounts:login')
+def render_unified_dashboard(request):
+    """Redirects the legacy accounts dashboard path directly to the consolidated SCM dashboard [18]."""
+    return redirect('dashboard:home')
+
+# ... rest of your account views remain completely preserved for backward compatibility ...
 def render_onboarding_view(request):
     """Processes server-side template submission requests for company registration and user creation."""
     if request.method == "POST":
@@ -57,10 +66,6 @@ def render_login_view(request):
     return render(request, 'accounts/login.html')
 
 
-@login_required(login_url='accounts:login')
-def render_unified_dashboard(request):
-    """Redirects the legacy accounts dashboard path directly to the consolidated SCM dashboard [18]."""
-    return redirect('dashboard:home')
 
 
 @login_required(login_url='accounts:login')

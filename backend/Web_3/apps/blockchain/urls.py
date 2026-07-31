@@ -5,19 +5,16 @@ app_name = 'blockchain'
 
 urlpatterns = [
     # Interactive Console HTML Views [2]
-    # Wallet list aliases
     path('', views.wallet_list_html_view, name='wallet-list'),
-    path('wallets-alt/', views.wallet_list_html_view, name='wallet_list'), # Underscore alias [2]
+    path('wallets/', views.wallet_list_html_view, name='wallet-list-explicit'),  # Resolves the /blockchain/wallets/ 404 [2]
+    path('wallets-alt/', views.wallet_list_html_view, name='wallet_list'),       # Underscore alias [2]
     
-    # Transaction history list aliases
     path('transactions/', views.transaction_history_html_view, name='transaction-list'),
     path('transactions-alt/', views.transaction_history_html_view, name='transaction_list'), # Underscore alias [2]
     
-    # Ownership history aliases
     path('ownership/', views.ownership_history_html_view, name='ownership-history'),
     path('ownership-alt/', views.ownership_history_html_view, name='ownership_history'), # Underscore alias [2]
     
-    # NFT hub aliases
     path('nft-hub/', views.nft_hub_html_view, name='nft-hub'),
     path('nft_hub/', views.nft_hub_html_view, name='nft_hub'), # Underscore alias [2]
     

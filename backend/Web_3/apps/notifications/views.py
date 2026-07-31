@@ -41,6 +41,17 @@ class NotificationViewSet(viewsets.ModelViewSet):
         # FIXED: Resolved user identity directly from request session context
         total_cleared = NotificationService.bulk_mark_as_read(request.user.user_id)
         return Response({"success": True, "message": f"Successfully cleared {total_cleared} unread alerts."}, status=status.HTTP_200_OK)
+    
+    @login_required
+    @restrict_to_roles(allowed_roles=['LOGISTICS', 'MANUFACTURER', 'ADMIN', 'BUYER']) # Added BUYER to allow shipment monitoring
+    def activity_feed_view(request):
+        """Renders real-time transit Waypoint logs."""
+        feed = NotificationSelector.get_user_notifications(request.user).filter(notification_type='INFO')
+        context = {
+            'activity_feed': list(feed),
+            'breadcrumbs': [{'title': 'Operations Activity Feed', 'url': '#'}]
+        }
+        return render(request, 'notifications/activity_feed.html', context)
 
 
 # =========================================================================
